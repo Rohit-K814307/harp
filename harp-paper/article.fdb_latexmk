@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex article"] 1767200167.99981 "article.aux" "article.bbl" "article" 1767474323.37055 0
+["bibtex article"] 1767200167.99981 "article.aux" "article.bbl" "article" 1767567935.83314 0
   "./IEEEtran.bst" 1766439521.20422 59223 2083a3fc870ca3aacea8071478081723 ""
   "./refs.bib" 1767199753.24799 5166 6e5b33cf74d0860633251a10d339b639 ""
-  "article.aux" 1767474323.03154 2190 ccab25d4175083b4867ab716e254db99 "pdflatex"
+  "article.aux" 1767567935.54873 2190 ccab25d4175083b4867ab716e254db99 "pdflatex"
   (generated)
   "article.bbl"
   "article.blg"
   (rewritten before read)
-["pdflatex"] 1767474322.57471 "/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex" "article.pdf" "article" 1767474323.37071 0
-  "/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex" 1767474322.31551 12117 8b2b075edfa33c82f7ed2ac7bd20f558 ""
+["pdflatex"] 1767567935.11636 "/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex" "article.pdf" "article" 1767567935.83329 0
+  "/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex" 1767567934.78388 12138 13ea23a995d5f9db5c0ed5f292399eb3 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -90,9 +90,9 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1741450574 3345740 46b66fdb0378f7bf5921b5eabf1762b8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1766439505.20143 201383 9b4fa0e5bd5ea4d99740727e0320cae1 ""
-  "article.aux" 1767474323.03154 2190 ccab25d4175083b4867ab716e254db99 "pdflatex"
+  "article.aux" 1767567935.54873 2190 ccab25d4175083b4867ab716e254db99 "pdflatex"
   "article.bbl" 1767200168.06474 2913 ff5565d511723bfb915d52016a19884c "bibtex article"
-  "article.tex" 1767474322.31551 12117 8b2b075edfa33c82f7ed2ac7bd20f558 ""
+  "article.tex" 1767567934.78388 12138 13ea23a995d5f9db5c0ed5f292399eb3 ""
   (generated)
   "article.aux"
   "article.log"
