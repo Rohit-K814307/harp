@@ -1,0 +1,317 @@
+\documentclass[conference]{IEEEtran}
+
+% =====================
+% Packages (Minimal & General)
+% =====================
+\usepackage[pdftex]{graphicx}
+\graphicspath{{figures/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpeg}
+
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{url}
+
+% Center figures by default
+\makeatletter
+\g@addto@macro\@floatboxreset\centering
+\makeatother
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+% =====================
+% Document
+% =====================
+\begin{document}
+
+% -------- Title --------
+\title{\LARGE \textbf{HARP: Human-Aware Routing Policies for Multi-Stage Decision Pipelines}}
+
+% -------- Authors --------
+\author{
+    \authorblockN{Rohit Kulkarni}
+    \authorblockA{University of California, Berkeley}
+}
+
+\maketitle
+
+% =====================
+% Abstract
+% =====================
+\begin{abstract}
+A concise summary of the motivation, approach, and main findings of the work.
+Avoid citations and equations. Typically 150--250 words.
+\end{abstract}
+
+\hfill\break
+{\small
+\textbf{\textit{Keywords---}}
+keyword1, keyword2, keyword3, keyword4
+}
+
+\IEEEpeerreviewmaketitle
+
+% =====================
+% I. Introduction
+% =====================
+\section{Introduction}
+
+High-stakes institutional decision like medical insurance claims, 
+immigration applications, and credit approvals are increasingly supported
+by machine learning systems. In general, these systems are not fully 
+automated decision makers. Instead, automated models are embedded inside
+structured human review pipelines, where cases can be autonomously resolved
+or escalated to one or more human reviewers depending on factors including
+uncertainty, risk, and institutional constraints \cite{kleinberg2017,cowgill2019}.
+
+This problem is called \textit{selective prediction}, where a model is
+allowed to abstain on inputs where it has low confidence and defer to an
+expert human decision-maker \cite{elyaniv2010, geifman2017}. Previous works
+have studied selective classification and abstention, describing 
+tradeoffs between prediction risk and coverage. Works such as \cite{geifman2017,fisch2024}
+have developed confidence-based deferral policies with strong theoretical 
+guarantees. These approaches have been shown to be effective in applications where the
+alternative to automated prediction is a single, homogenous human expert.
+
+However, real-world decision pipelines rarely conform to single-stage abstraction. In practice,
+human review is heirarchical, where casis can be routed to reviewers with differing levels
+of expertise, authority, and cost. For example, in insurance claim resolution, an application
+may be resolved automatically, reviewed by a junior examiner, escalated to a senior specialist,
+or forwarded to an administrative judge. Modelling deferral as a binary decision process does
+not always model this system well as it obscures important tradeoffs between accuracy and
+human resource allocation.
+
+Previous work on algorithmic triage and human-AI collaboration has studied how automated systems
+can allocate cases between humans and models \cite{raghu2019,mozannar2021,wilder2020}. While these
+approaches acknowledge heterogenous human expertise, they focus on two-stage settings, rarely
+on heuristic or fixed routing rules, or do not explicitly connect to the selective prediction
+framework. As a result, existing methods provide limited guidance for designing multi-stage
+pipelines under explicit budget constraints.
+
+In this work, we introduce Human-Aware Routing Policies (HARP), a framework for selecive
+prediction in multi-stage human-AI decision pipelines. Rather than making deferral a binary
+action, HARP formulates decision making as a routing problem over a heirarchy of human reviewers
+with increasing costs, with the objective of minizing system loss while also respective
+human resource consstraints. 
+
+We study this framework in the context of structured application review pipelines motivated by 
+Social Security Disability Insurance (SSDI) claim resolution, where decisions are sequential,
+resource constrained, and subject to high institutional stakes. This setting shows the limitations
+of single-stage selective prediction and motivats the need for routing-aware decision policies.
+
+Our work makes the following contributions:
+\begin{itemize}
+ \item contrib1
+ \item contrib 2
+ \item contrib 3
+\end{itemize}
+
+% Example figure
+\begin{figure}[t]
+\includegraphics[width=0.9\columnwidth]{example-image}
+\caption{Example figure caption.}
+\label{fig:example}
+\end{figure}
+
+% =====================
+% II. Problem Formulation
+% =====================
+\section{Problem Formulation}
+
+\subsection{Single Stage Policies}
+
+We specifically study human-AI collaborative decision making in structured application 
+review pipelines, where an automated system can either issue a decision or defer the 
+decision to a human reviewer at some cost.
+
+Let 
+\[
+\begin{aligned}
+(x, y) &\sim D \parbox[t]{0.6\linewidth}{, where $D$ is the real world distribution over applications and ground-truth decisions}\\
+x &\in \mathcal{X} \parbox[t]{0.6\linewidth}{, where $x$ is an application}\\
+y &\in \mathcal{Y} \parbox[t]{0.6\linewidth}{, where $y$ is the ground truth decision}
+\end{aligned}
+\]
+
+We consider a predictive model $f: \mathcal{X} \rightarrow \mathcal{Y}$ and a 
+deferral policy $r: \mathcal{X} \rightarrow \{0, 1\}$, where
+\[
+\begin{aligned}
+r(x) &= 0 && \parbox[t]{0.6\linewidth}{when the policy chooses to predict autonomously} \\
+r(x) &= 1 && \parbox[t]{0.6\linewidth}{when the policy defers to a human for a cost $c_{h} > 0$.}
+\end{aligned}
+\]
+
+When $r(x) = 0$, the automated system incurs cost $\mathcal{L}_{1}$, which is given by
+\[
+\mathcal{L}_{1}(f) = \ell(f(x), y),
+\]
+where $\ell$ is by convention 0-1 loss or cross-entropy.
+
+When $r(x) = 1$, the system defers to a human for a human cost $c_h > 0$,
+assuming that the human produces the correct decision. Therefore, the total system loss can 
+be modeled as the expectation of a function of $f$ and $r$:
+\begin{align}
+\mathcal{L}(f, r) 
+    &= \mathbb{E}_{(x,y) \sim D} \Big[ 
+        \ell(f(x),y) \cdot \mathbf{1}\{ r(x) = 0 \} \notag \\
+    &\qquad + c_h \cdot \mathbf{1}\{ r(x) = 1 \} 
+       \Big]
+\end{align}
+
+In this selective prediction model, when the policy $r(x) = 0$, $f$ predicts autonomously. 
+Over time, as $r(x)$ continues to be 1, $c_h$ will increase. Therefore, we can define a coverage
+function of $r$ as follows:
+\begin{align}
+\mathrm{cov}(r) = \mathbb{E}_{(x,y) \sim D}[\mathbf{1}\{r(x)=0\}],
+\end{align}
+which describes the fraction for which the policy $r$ chooses for $f$ not to abstain.
+
+When $r(x) = 0$, $f(x)$ is evaluated and we can define the conditional risk as the loss $\ell$
+between $f(x)$ and $y$ for a given $(x, y) \sim D$. More formally, this is:
+\begin{align}
+\mathrm{risk}(f, r) = \mathbb{E}_{(x,y) \sim D}[\ell(f(x), y) \mid r(x) = 0],
+\end{align}
+which shows the conditional risk when $f$ autonomously makes the decision.
+
+Based on this coverage function and the conditional risk $\mathcal{L}$, we can define a 
+coverage-constrained optimization problem as follows:
+\begin{align}
+\label{eq:minbinary}
+\min_{f,r} \;& \mathbb{E} \big[ \ell(f(x),y) \mid r(x) = 0 \big], &&
+\text{s.t. } \mathrm{cov}(r) \geq \kappa, 
+\end{align}
+where $\kappa$ is the constraint for the fraction where $r(x) = 0$.
+
+Therefore, we can apply a confidence-based threshold defined on the confidence from the output of $f$, 
+which is traditionally just the max of the output of the sigmoid or softmax function if $f$ is a 
+neural network.
+Thus, we let:
+\begin{align}
+p_\theta(y | x) && \parbox[t]{0.5\linewidth}{be the predictive distribution of $f$}\\
+\mathrm{conf}(x) = \max_{y}p_\theta(y | x) && \parbox[t]{0.5\linewidth}{be defined as the 
+                                                                        confidence of a given 
+                                                                        application-decision pair.}
+\end{align}
+
+We can then threshold the policy $r$ on the confidence function for a hyperparameter 
+$\tau$ as follows:
+\begin{align}
+r_\tau(x) =
+\begin{cases} 
+0 & \text{if } \mathrm{conf}(x) \geq \tau, \\
+1 & \text{if } \mathrm{conf}(x) < \tau
+\end{cases}
+\end{align}
+
+\subsection{Extension to Multi-Stage Policies}
+
+The optimization problem in Eq.~\eqref{eq:minbinary} is applicable when we have a binary decision of
+using policy $f$ or abstaining and deferring to an arbitrary human reviewer. However, when we have a 
+heirarchical set of $k$ human reviewers $H = \{0,1, \dots ,k\}$, each with increasing costs $c_{h_k}$, we have
+$c_{h_k}$ increasing when $k \geq 1$.
+
+For the purposes of this paper, single-stage refers to $|H| = 1$, and multi-stage is when $|H| > 1$. 
+We extend the single stage-policy to multi-stage. In this case, we make a trivial change to the 
+minimization problem in Eq.~\eqref{eq:minbinary} and the initial routing policy $r$.
+Let 
+\begin{align}
+r_{m}: \mathcal{X} \rightarrow \{0, 1, \dots, k\} && \parbox[t]{0.5\linewidth}{be the multistage routing policy,} \\
+\ell_s(x) && \parbox[t]{0.5\linewidth}{be the loss of sending $x$ to stage $s$,} \\
+B && \parbox[t]{0.5\linewidth}{be the total budget constraint for the human resources available.}
+\end{align}
+
+We assume $\ell_0(x) = \ell(f(x), y)$ corresponds to the automated model loss, and 
+$\ell_s(x) = c_{h_s}$ for $s \geq 1$, assuming human reviewers produce correct decisions.
+
+Therefore, the constrained optimization problem we must solve is as follows:
+\begin{align}
+\label{eq:minmulti}
+\min_{r_m} \;& \mathbb{E} \big[ \ell_{r_m(x)}(x)], &&
+\text{s.t. } \mathbb{E} \big[c_{h_{r_m(x)}}] \leq B. 
+\end{align}
+
+\subsection{Stochastic Routing Policies}
+
+In practice, stochastic routing allows for calculating gradients in optimization, where 
+the system learns a probabilistic policy over decision stages. Rather than deterministically 
+assigning an application $x$ to a single stage, we define 
+a routing distribution $\pi_\phi(s \mid x)$ over stages $s \in \{0,1,\dots,k\}$, 
+parameterized by $\phi$. For each input, a stage is sampled according to this distribution, 
+allowing the routing policy to express uncertainty and to smooth decisions near stage boundaries.
+
+Under this formulation, the expected system loss is given by
+\begin{align}
+\mathbb{E}_{(x,y)\sim D}
+\left[
+\sum_{s=0}^k \pi_\phi(s \mid x)\,\ell_s(x)
+\right],
+\end{align}
+with an associated expected human cost
+\begin{align}
+\mathbb{E}_{x\sim D}
+\left[
+\sum_{s=0}^k \pi_\phi(s \mid x)\,c_{h_s}
+\right].
+\end{align}
+
+Therefore, at training time the system is optimized stochastically, but during inference it is
+deterministic.
+
+% =====================
+% III. Background / Related Work
+% =====================
+\section{Background and Related Work}
+
+% =====================
+% IV. Data, Materials, or Methods
+% =====================
+\section{Materials and Methods}
+
+Describe the data, materials, experimental setup, or methodological framework.
+This section should be detailed enough to allow reproducibility.
+
+\subsection{Data or Materials}
+Describe sources, collection procedures, and properties.
+
+\subsection{Methodology}
+Explain analytical, computational, or experimental methods used.
+
+% =====================
+% V. Results
+% =====================
+\section{Results}
+
+Present results objectively, using tables and figures where appropriate.
+
+% =====================
+% VI. Discussion
+% =====================
+\section{Discussion}
+
+Interpret the results, explain trends, limitations, and unexpected outcomes.
+Relate findings back to the motivation and prior work.
+
+% =====================
+% VII. Conclusion and Future Work
+% =====================
+\section{Conclusion and Future Work}
+
+Summarize key contributions and outline potential directions for future research.
+
+% =====================
+% Author Notes
+% =====================
+\section*{Author Note}
+The authors declare no competing interests.
+
+\section*{Author Contributions}
+Describe each author’s contribution to the work.
+
+% =====================
+% References
+% =====================
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
