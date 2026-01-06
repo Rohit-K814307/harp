@@ -40,7 +40,7 @@ def combine_csv(sample_dir="data/raw/samples"):
      # print(os.path.join(harp_dir, "harp", sample_dir, "**", "*.csv"))
 
      files = glob.glob(os.path.join(harp_dir, "harp", sample_dir, "**", "*.csv"), recursive=True)
-     pd.concat([pd.read_csv(f) for f in files], ignore_index=True).to_csv(save_dir)
+     pd.concat([pd.read_csv(f) for f in files], ignore_index=True).to_csv(save_dir, index=False)
      
 
 #download all raw data + combine into one csv
