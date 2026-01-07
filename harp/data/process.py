@@ -1,3 +1,5 @@
+from harp.data.encodings import *
+
 import numpy as np
 import pandas as pd
 
@@ -64,9 +66,9 @@ def group_by_reviewer(df):
                score += 1
                reasons.append("High-Cost")
 
-          if score >= 5:
+          if score >= 6:
                tier = 3
-          elif score >= 2:
+          elif score >= 4:
                tier = 2
           else:
                tier = 1
@@ -164,13 +166,37 @@ def inject_rejected(df, reject_ratio):
 
 
 ### Encode categorical variables
+def replace(df, col, word, replacement):
+     df[col] = df[col].replace(word, replacement)
+     return df
+     
+def flag_non_numbers(df, col_name):
+    """
+    Returns a boolean Series: True for entries that are not numeric.
+    """
+    mask = ~df[col_name].apply(lambda x: str(x).replace('.', '', 1).isdigit())
+    return df.loc[mask, col_name]
 
-def encode(df):
+def encode(df, save_dir):
 
-     # list of categorical vars
-     cats = []
+     # drop + clean + encode to numbers 😭
+     drop_cols = [
+          'reviewer_score', 'reviewer_reasons','rejection_reason_code', 
+          'rejection_desc', 'DESYNPUF_ID', 'CLM_ID', 'PRVDR_NUM',
+          'AT_PHYSN_NPI', 'OP_PHYSN_NPI',"CLM_ADMSN_DT", "NCH_BENE_DSCHRG_DT"
+]
+     df = df.drop(drop_cols, axis=1)
 
+     # claim_drg
+     df['CLM_DRG_CD'] = df['CLM_DRG_CD'].replace('MISSING', -1)
+     df['CLM_DRG_CD'] = df['CLM_DRG_CD'].replace('OTH', 1000)
+     df["CLM_DRG_CD"] = df["CLM_DRG_CD"].astype(int)
 
+     # breakdown cols
+     dgns_cols = [x for x in df.columns if "DGNS" in x]
+     prcdr_cols = [x for x in df.columns if "PRCDR" in x]
 
+     df_dgns_encoded = encode_code_columns(df, dgns_cols, CONSTANTS_DGNS, "DGNS")
+     df_encoded = encode_code_columns(df_dgns_encoded, prcdr_cols, CONSTANTS_PRCDR, "PRCDR")
 
-
+     df_encoded.to_csv(save_dir)
