@@ -43,7 +43,43 @@ def clean_df(df):
 
 ### group by 3 types of reviewer; lower level, mid level, senior level
 
-def group_by_reviewer(df):
+def identify_buckets(n, grouped_df):
+
+     sorted_scores = grouped_df["reviewer_score"].sort_values()
+    
+     _, bin_edges = pd.qcut(sorted_scores, q=n, retbins=True, duplicates='drop')
+
+     cutoffs = np.unique(bin_edges)
+    
+     return cutoffs
+
+def get_reviewer_score_cutoffs(n, grouped_df, score_col="reviewer_score", round_to_int=True):
+    if score_col not in grouped_df.columns:
+        raise ValueError(f"Column '{score_col}' not found in DataFrame")
+
+    scores = grouped_df[score_col].dropna().values
+    if len(scores) == 0:
+        raise ValueError("No non-NaN scores available to compute quantiles")
+
+    # e.g. for n=3 → quantile positions [0.0, 0.333..., 0.666..., 1.0]
+    quantiles = np.linspace(0, 1, n + 1)
+    edges = np.quantile(scores, quantiles)
+
+    # We only keep internal cutoffs (exclude min and max)
+    cutoffs = edges[1:-1]
+
+    if round_to_int:
+        cutoffs = [int(round(x)) for x in cutoffs]
+    else:
+        cutoffs = cutoffs.tolist()
+
+    print("Quantile positions:", [float(q) for q in quantiles])
+    print("Internal cutoffs (use by index):", cutoffs)
+
+    return cutoffs
+
+
+def group_by_reviewer(df, cutoffs):
      
      def calculate_complexity(row):
           score = 0
@@ -66,17 +102,16 @@ def group_by_reviewer(df):
                score += 1
                reasons.append("High-Cost")
 
-          if score >= 6:
-               tier = 3
-          elif score >= 4:
-               tier = 2
-          else:
-               tier = 1
+          n = len(cutoffs) - 1
+          tier = None
+          for i in range(n-1, -1, -1):
+               if score >= cutoffs[i]:
+                    tier = 1 + i
 
           return pd.Series([score, tier, reasons])
 
      df[['reviewer_score', 'reviewer', 'reviewer_reasons']] = df.apply(calculate_complexity, axis=1)
-     df.to_csv("harp/data/raw/csm_2008_2010_samples_grouped.csv", index=False)
+     df.to_csv("harp/data/raw/cms_2008_2010_samples_grouped.csv", index=False)
 
 
 
@@ -200,3 +235,4 @@ def encode(df, save_dir):
      df_encoded = encode_code_columns(df_dgns_encoded, prcdr_cols, CONSTANTS_PRCDR, "PRCDR")
 
      df_encoded.to_csv(save_dir)
+
