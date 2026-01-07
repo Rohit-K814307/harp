@@ -163,13 +163,49 @@ def inject_rejected(df, reject_ratio):
 
 
 
-### Encode categorical variables
-
+### Encode categorical variables:
 def encode(df):
+     # drop extra columns
+     drop_cols = [
+          'reviewer_score', 'reviewer_reasons','rejection_reason_code', 
+          'rejection_desc', 'DESYNPUF_ID', 'CLM_ID', 'PRVDR_NUM',
+          'AT_PHYSN_NPI', 'OP_PHYSN_NPI',"CLM_ADMSN_DT", "NCH_BENE_DSCHRG_DT"
+]
+     df = df.drop(drop_cols, axis=1)
+
+
+     # calculate variable metadata
+
+     # list of variables with none values to be filled in (missings) swap to -1 
+     missing_cols = ['CLM_DRG_CD']
+     df[missing_cols] = df[missing_cols].replace('Missing', -1)
+     
+     # Return the processed DataFrame
+     return df
+
+     # list of categorical vars
+     
+
+
+
+     
+
+
+
+
+
+
+
+### Normalize features
+
+def normalize(df):
+
+     # 
+
+
 
      # list of categorical vars
      cats = []
-
 
 
 
