@@ -123,7 +123,6 @@ def corrupt_accepted(chunk, reason_type):
 
     return chunk
 
-
 def inject_rejected(df, reject_ratio):
      
      reject_reasons = [
@@ -161,3 +160,17 @@ def inject_rejected(df, reject_ratio):
           j = k
      
      return pd.concat([df_accepted, pd.concat(rejected_chunks)]).sample(frac=1).reset_index(drop=True)
+
+
+
+### Encode categorical variables
+
+def encode(df):
+
+     # list of categorical vars
+     cats = []
+
+
+
+
+
