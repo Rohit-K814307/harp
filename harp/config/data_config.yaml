@@ -15,7 +15,7 @@ random_state: 42
 # Corruption / Injection
 injection_rate: 0.2
 
-# Complexity Scoring Weights
+# Complexity Scoring Weights by Complexity Reason
 scores:
   multi_payer: 3
   short_stay: 3
