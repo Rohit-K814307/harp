@@ -62,7 +62,8 @@ def generate_data(config):
 
 
     print("... Assigning Reviewer Tiers")
-    df_train = group_by_reviewer(df_train, cutoffs, config['scores'])
+    reviewer_rand = {"traditional":config["traditional_random_error"], "out_of_depth":config["reviewer_out_of_depth_error"]}
+    df_train = group_by_reviewer(df_train, cutoffs, config['scores'], reviewer_rand)
     df_val = group_by_reviewer(df_val, cutoffs, config['scores'])
     df_test = group_by_reviewer(df_test, cutoffs, config['scores'])
 

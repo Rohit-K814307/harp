@@ -25,3 +25,7 @@ scores:
 # Clustering / Reviewer Settings
 n_reviewers: 2
 kmeans_init: 10
+
+# Sim errors for determining d
+traditional_random_error: 0.95
+reviewer_out_of_depth_error: 0.5

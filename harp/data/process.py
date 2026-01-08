@@ -44,7 +44,7 @@ def clean_df(df):
 
 ### group by 3 types of reviewer; lower level, mid level, senior level
 
-def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "surgical":2, "high_cost":1}):
+def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "surgical":2, "high_cost":1}, reviewer_rand={"traditional": 0.95, "out_of_depth": 0.5}):
      rng = np.random.default_rng(seed=42)
 
      def calculate_complexity_and_simulation(row):
@@ -78,18 +78,18 @@ def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "sur
           # calculate reviewer correct (would a junior get it right or senior, etc. till n) -> in the real world, this would be collected as
           # who the data is escalated up till and the last one who it's escalated till is the one who gets it "right"
           # sometimes though even when it's escalated there is some given probability of chance that the given reviewer fails, to
-          # portray if the claim should actually be approved or denied in the first place
+          # portray if the claim should actually be approved or denied in the first place 
           reviewer_results = []
 
           for reviewer_level in range(1, n_tiers + 1):
                
                if reviewer_level >= claim_tier:
                     # 5% human error
-                    prob_success = 0.95
+                    prob_success = reviewer_rand["traditional"]
                else:
-                    # cccuracy decreases based on how far out of depth they are
+                    # accuracy decreases based on how far out of depth they are
                     gap = claim_tier - reviewer_level
-                    prob_success = 0.50 / (gap + 1) 
+                    prob_success = reviewer_rand["out_of_depth"] / (gap + 1) 
                
                is_correct = rng.random() < prob_success
                reviewer_results.append(is_correct)
