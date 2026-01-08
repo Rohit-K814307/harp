@@ -45,11 +45,19 @@ def calculate_cutoffs(df, scores, n_reviewers, n_init, random_state, plot=False)
           cutoffs.append(round(boundary, 2))
 
      max_score = total_scores.max()
-     cutoffs.append(float(max_score) + 1.0) 
+     cutoffs.append(float(max_score.iloc[0]) + 1.0)
+     cutoffs = [float(x) for x in cutoffs]
+
+     print("\n--- Data Per-Reviewer Distribution ---")
+     binned = pd.cut(total_scores.iloc[:, 0], bins=cutoffs, right=False, include_lowest=True)
+     counts = binned.value_counts().sort_index()
+
+     for i, (interval, count) in enumerate(counts.items()):
+          print(f"Reviewer {i + 1} (Score {interval.left} - {interval.right}): {count} claims")
+     print("--------------------------------------\n")
 
      if plot:
           plot_cutoffs(total_scores, cutoffs)
-
 
      return cutoffs
 
