@@ -6,7 +6,18 @@ import torch
 import numpy as np
 import ast
 
+#dataset = HARPDataset(mode="train", costs=[0.0, 1.0, 2.0])
 
+# Access directly as attributes
+#x = dataset.x  # {'categorical': {...}, 'numerical': array(...)}
+#d = dataset.d  # numpy array of reviewer decisions
+#c = dataset.c  # tensor([0.0, 1.0, 2.0])
+
+# Or get individual samples
+#sample = dataset[0]
+#x_sample = sample['x']  # Features for one sample
+#d_sample = sample['d']  # Decisions for one sample
+#c_sample = sample['c']  # Costs (same for all)
 class HARPDataset(Dataset):
     """Simple dataset for HARP. Provides x (features), d (decisions), c (costs)."""
     
@@ -47,16 +58,26 @@ class HARPDataset(Dataset):
             and any(kw in col for kw in ['AMT', 'CNT', 'LBLTY'])
         ]
         
-        # Store data
-        self.categorical_data = {
+        # Store data for x (features)
+        categorical_data = {
             col: self.df[col].fillna(-1).astype(np.int64).values
             for col in self.categorical_columns
         }
         
         if self.numerical_columns:
-            self.numerical_data = self.df[self.numerical_columns].fillna(0.0).astype(np.float32).values
+            numerical_data = self.df[self.numerical_columns].fillna(0.0).astype(np.float32).values
         else:
-            self.numerical_data = None
+            numerical_data = None
+        
+        # Store as self.x for easy access
+        self.x = {
+            'categorical': categorical_data,
+            'numerical': numerical_data
+        }
+        
+        # Keep for __getitem__ compatibility
+        self.categorical_data = categorical_data
+        self.numerical_data = numerical_data
         
         # Get reviewer_correct (d)
         if 'reviewer_correct' in self.df.columns:
