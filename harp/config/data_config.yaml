@@ -33,7 +33,7 @@ reviewer_out_of_depth_error: 0.5
 
 # Reviewer cost params for determining c
 reviewer_cost_params:
-  cost_mode: "scarcity"
+  cost_mode: "mrr"
 
   mrr_penalty: 10
   mrr_base_error_rate: 0.5

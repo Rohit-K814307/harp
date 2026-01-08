@@ -12,7 +12,7 @@ def calculate_error_rate(claim_status, reviewer_correct, base_error_rate, n):
      claim_status = np.asarray(claim_status)
      reviewer_correct = reviewer_correct[:, n-1]
 
-     return np.mean(claim_status == reviewer_correct)
+     return np.mean(claim_status != reviewer_correct)
 
 def marginal_risk_reduction(df, n, penalty, base_error_rate):
      
@@ -42,7 +42,8 @@ def scarcity(df, n, c_base):
 def calculate_c(df, n, args):
 
      if args["cost_mode"] == "mrr":
-          return np.array(marginal_risk_reduction(df, n, args["mrr_penalty"], args["mrr_base_error_rate"])).round(decimals=3).tolist()
+          raw_costs = np.array(marginal_risk_reduction(df, n, args["mrr_penalty"], args["mrr_base_error_rate"]))
+          return np.cumsum(raw_costs).round(decimals=3).tolist()
      else:
           return np.array(scarcity(df, n, args["scarcity_c_base"])).round(decimals=3).tolist()
 

@@ -92,15 +92,13 @@ def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "sur
                     prob_success = reviewer_rand["out_of_depth"] / (gap + 1) 
                
                is_correct = rng.random() < prob_success
-               reviewer_results.append(is_correct)
+               reviewer_results.append(int(is_correct))
 
           return pd.Series([score, claim_tier, reasons, reviewer_results])
 
      df[['reviewer_score', 'reviewer', 'reviewer_reasons', 'reviewer_correct']] = df.apply(
           calculate_complexity_and_simulation, axis=1
      )
-
-     #print(np.array(df["reviewer_correct"].to_list()).shape)
 
      return df
 
