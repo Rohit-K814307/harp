@@ -78,40 +78,63 @@ def get_reviewer_score_cutoffs(n, grouped_df, score_col="reviewer_score", round_
 
     return cutoffs
 
+def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "surgical":2, "high_cost":1}):
+     rng = np.random.default_rng(seed=42)
 
-def group_by_reviewer(df, cutoffs):
-     
-     def calculate_complexity(row):
+     def calculate_complexity_and_simulation(row):
           score = 0
           reasons = []
 
           if row['NCH_PRMRY_PYR_CLM_PD_AMT'] > 0:
-               score += 3
+               score += scores["multi_payer"]
                reasons.append("Multi-Payer")
 
           if row['CLM_UTLZTN_DAY_CNT'] <= 1:
-               score += 3
+               score += scores["short_stay"]
                reasons.append("Short-Stay")
 
           op_phys = row['OP_PHYSN_NPI']
           if pd.notna(op_phys) and str(op_phys).upper() != "MISSING":
-               score += 2
+               score += scores["surgical"]
                reasons.append("Surgical")
 
           if row['CLM_PMT_AMT'] > 20000:
-               score += 1
+               score += scores["high_cost"]
                reasons.append("High-Cost")
 
-          n = len(cutoffs) - 1
-          tier = None
-          for i in range(n-1, -1, -1):
+          n_tiers = len(cutoffs) - 1
+          claim_tier = 1 # Default to lowest
+          for i in range(n_tiers - 1, -1, -1):
                if score >= cutoffs[i]:
-                    tier = 1 + i
+                    claim_tier = 1 + i
+                    break
 
-          return pd.Series([score, tier, reasons])
+          # calculate reviewer correct (would a junior get it right or senior, etc. till n) -> in the real world, this would be collected as
+          # who the data is escalated up till and the last one who it's escalated till is the one who gets it "right"
+          # sometimes though even when it's escalated there is some given probability of chance that the given reviewer fails, to
+          # portray if the claim should actually be approved or denied in the first place
+          reviewer_results = []
 
-     df[['reviewer_score', 'reviewer', 'reviewer_reasons']] = df.apply(calculate_complexity, axis=1)
-     df.to_csv("harp/data/raw/cms_2008_2010_samples_grouped.csv", index=False)
+          for reviewer_level in range(1, n_tiers + 1):
+               
+               if reviewer_level >= claim_tier:
+                    # 5% human error
+                    prob_success = 0.95
+               else:
+                    # cccuracy decreases based on how far out of depth they are
+                    gap = claim_tier - reviewer_level
+                    prob_success = 0.50 / (gap + 1) 
+               
+               is_correct = rng.random() < prob_success
+               reviewer_results.append(is_correct)
+
+          return pd.Series([score, claim_tier, reasons, reviewer_results])
+
+     df[['reviewer_score', 'reviewer', 'reviewer_reasons', 'reviewer_correct']] = df.apply(
+     calculate_complexity_and_simulation, axis=1
+     )
+
+     return df
 
 
 
