@@ -27,7 +27,7 @@ def calculate_complexity(row, scores):
 
 def calculate_cutoffs(df, scores, n_reviewers, n_init, random_state, plot=False):
      
-     total_scores = df.apply(lambda row: calculate_complexity(row, scores))
+     total_scores = df.apply(lambda row: calculate_complexity(row, scores), axis=1)
 
      data = total_scores.values.reshape(-1, 1)
 
@@ -44,7 +44,7 @@ def calculate_cutoffs(df, scores, n_reviewers, n_init, random_state, plot=False)
           boundary = (centroids[i] + centroids[i+1]) / 2
           cutoffs.append(round(boundary, 2))
 
-     max_score = df['reviewer_score'].max()
+     max_score = total_scores.max()
      cutoffs.append(float(max_score) + 1.0) 
 
      if plot:
