@@ -28,13 +28,23 @@ class HARPDataset(Dataset):
             dataset_dir: Directory containing encoded CSV files
             mode: One of "train", "val", or "test"
         """
-        files = glob.glob(os.path.join(dataset_dir, "/*.csv"))
-        try:
-            mode_dir = next(fname for fname in files if mode in fname)
-        except:
-            raise ValueError(f"Mode {mode} not found in {dataset_dir}")
+        # Fix file path: look for CSV files in the directory
+        files = glob.glob(os.path.join(dataset_dir, "*.csv"))
+        if not files:
+            # Try alternative path pattern
+            files = glob.glob(os.path.join(dataset_dir, "**", "*.csv"), recursive=True)
         
-        self.df = pd.read_csv(mode_dir)
+        # Find the file matching the mode
+        mode_file = None
+        for f in files:
+            if mode in os.path.basename(f).lower():
+                mode_file = f
+                break
+        
+        if mode_file is None:
+            raise ValueError(f"Mode '{mode}' not found in {dataset_dir}. Available files: {[os.path.basename(f) for f in files]}")
+        
+        self.df = pd.read_csv(mode_file)
         self.load_attributes()
 
     def load_attributes(self):
@@ -94,16 +104,22 @@ class HARPDataset(Dataset):
         - 'numerical': FloatTensor of numerical features (or None)
         - 'claim_status': Label (0 or 1) if available
         - 'reviewer': Reviewer level (1, 2, or 3) if available
+        
+        Note: DataLoader will automatically batch these correctly.
+        For categorical dict, it batches each tensor separately.
+        For numerical tensor, it stacks along first dimension.
         """
         # Prepare categorical features as dictionary of tensors
+        # Shape: (1,) for each feature - DataLoader will stack these to (batch_size,)
         categorical = {
-            col: torch.LongTensor([self.categorical_data[col][idx]])
+            col: torch.tensor(self.categorical_data[col][idx], dtype=torch.long)
             for col in self.categorical_columns
         }
         
         # Prepare numerical features as tensor
+        # Shape: (num_numerical_features,) - DataLoader will stack to (batch_size, num_numerical_features)
         if self.numerical_data is not None:
-            numerical = torch.FloatTensor([self.numerical_data[idx]])
+            numerical = torch.tensor(self.numerical_data[idx], dtype=torch.float32)
         else:
             numerical = None
         
@@ -114,20 +130,41 @@ class HARPDataset(Dataset):
         }
         
         if self.claim_status is not None:
-            result['claim_status'] = torch.LongTensor([self.claim_status[idx]])
+            result['claim_status'] = torch.tensor(self.claim_status[idx], dtype=torch.long)
         
         if self.reviewer is not None:
-            result['reviewer'] = torch.LongTensor([self.reviewer[idx]])
+            result['reviewer'] = torch.tensor(self.reviewer[idx], dtype=torch.long)
         
         return result
     
     def get_categorical_columns(self):
         """Return list of categorical column names."""
-        return self.categorical_columns
+        return self.categorical_columns.copy()
     
     def get_numerical_columns(self):
         """Return list of numerical column names."""
-        return self.numerical_columns
+        return self.numerical_columns.copy()
+    
+    def get_info(self):
+        """Return dataset information."""
+        info = {
+            'num_samples': self.n_samples,
+            'categorical_features': len(self.categorical_columns),
+            'numerical_features': len(self.numerical_columns),
+            'has_claim_status': self.claim_status is not None,
+            'has_reviewer': self.reviewer is not None
+        }
+        if self.claim_status is not None:
+            info['claim_status_distribution'] = {
+                'accepted': int((self.claim_status == 1).sum()),
+                'rejected': int((self.claim_status == 0).sum())
+            }
+        if self.reviewer is not None:
+            unique_reviewers, counts = np.unique(self.reviewer, return_counts=True)
+            info['reviewer_distribution'] = {
+                int(r): int(c) for r, c in zip(unique_reviewers, counts)
+            }
+        return info
           
 
 
