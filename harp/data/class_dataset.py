@@ -12,12 +12,14 @@ import ast
 #x = dataset.x  # {'categorical': {...}, 'numerical': array(...)}
 #d = dataset.d  # numpy array of reviewer decisions
 #c = dataset.c  # tensor([0.0, 1.0, 2.0])
+#y = dataset.y  # numpy array of claim_status (0/1)
 
 # Or get individual samples
 #sample = dataset[0]
 #x_sample = sample['x']  # Features for one sample
 #d_sample = sample['d']  # Decisions for one sample
 #c_sample = sample['c']  # Costs (same for all)
+#y_sample = sample['y']  # Claim status (0/1)
 class HARPDataset(Dataset):
     """Simple dataset for HARP. Provides x (features), d (decisions), c (costs)."""
     
@@ -79,6 +81,9 @@ class HARPDataset(Dataset):
         self.categorical_data = categorical_data
         self.numerical_data = numerical_data
         
+        # Get claim_status (y)
+        self.y = self.df['claim_status'].values if 'claim_status' in self.df.columns else None
+        
         # Get reviewer_correct (d)
         if 'reviewer_correct' in self.df.columns:
             self.d = []
@@ -122,8 +127,12 @@ class HARPDataset(Dataset):
         # d: reviewer decisions
         d = torch.tensor([bool(x) for x in self.d[idx]], dtype=torch.float32) if self.d is not None else None
         
+        # y: claim status
+        y = torch.tensor(self.y[idx], dtype=torch.long) if self.y is not None else None
+        
         return {
             'x': x,
             'd': d,
-            'c': self.c  # Same for all samples
+            'c': self.c,  # Same for all samples
+            'y': y
         }
