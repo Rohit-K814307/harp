@@ -1,6 +1,7 @@
 from harp.data.collect import collect
 from harp.data.process import clean_df, group_by_reviewer, inject_rejected, encode
 from harp.data.cutoffs import calculate_cutoffs
+from harp.data.reviewer_costs import calculate_c
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -56,7 +57,7 @@ def generate_data(config):
         n_reviewers=config['n_reviewers'],
         n_init=config['kmeans_init'],
         random_state=config['random_state'],
-        plot=False
+        plot=config["plot_cutoffs"]
     )
 
 
@@ -66,7 +67,6 @@ def generate_data(config):
     df_train = group_by_reviewer(df_train, cutoffs, config['scores'], reviewer_rand)
     df_val = group_by_reviewer(df_val, cutoffs, config['scores'])
     df_test = group_by_reviewer(df_test, cutoffs, config['scores'])
-
 
 
     print(f"... Saving Processed Datasets to {config['output_dir_raw']}")
@@ -84,6 +84,11 @@ def generate_data(config):
     encode(df_train, os.path.join(config['output_dir_encoded'], "train.csv"))
     encode(df_val, os.path.join(config['output_dir_encoded'], "val.csv"))
     encode(df_test, os.path.join(config['output_dir_encoded'], "test.csv"))
+
+
+
+    print(f"... Calculating Reviewer Costs with {config["reviewer_cost_params"]["cost_mode"]}")
+    print(f"Found costs: {calculate_c(df_train, config["n_reviewers"], config["reviewer_cost_params"])}")
 
     print("Dataset generation complete.")
 

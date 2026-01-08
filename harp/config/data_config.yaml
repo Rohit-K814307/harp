@@ -27,5 +27,15 @@ n_reviewers: 2
 kmeans_init: 10
 
 # Sim errors for determining d
+plot_cutoffs: True
 traditional_random_error: 0.95
 reviewer_out_of_depth_error: 0.5
+
+# Reviewer cost params for determining c
+reviewer_cost_params:
+  cost_mode: "scarcity"
+
+  mrr_penalty: 10
+  mrr_base_error_rate: 0.5
+
+  scarcity_c_base: 1

@@ -97,8 +97,10 @@ def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "sur
           return pd.Series([score, claim_tier, reasons, reviewer_results])
 
      df[['reviewer_score', 'reviewer', 'reviewer_reasons', 'reviewer_correct']] = df.apply(
-     calculate_complexity_and_simulation, axis=1
+          calculate_complexity_and_simulation, axis=1
      )
+
+     #print(np.array(df["reviewer_correct"].to_list()).shape)
 
      return df
 
