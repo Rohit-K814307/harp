@@ -1,0 +1,27 @@
+# Data Paths
+raw_input_path: "harp/data/raw/cms_2008_2010_samples.csv"
+output_dir_raw: "harp/data/raw/harp_dataset"
+output_dir_encoded: "harp/data/raw/harp_dataset_encoded"
+
+# Preprocessing
+collect_samples: 5
+sample_dir: "harp/data/raw/samples"
+
+# Splitting
+test_size: 0.15
+val_size: 0.15
+random_state: 42
+
+# Corruption / Injection
+injection_rate: 0.2
+
+# Complexity Scoring Weights
+scores:
+  multi_payer: 3
+  short_stay: 3
+  surgical: 2
+  high_cost: 1
+
+# Clustering / Reviewer Settings
+n_reviewers: 2
+kmeans_init: 10

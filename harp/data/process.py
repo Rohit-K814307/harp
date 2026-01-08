@@ -39,6 +39,7 @@ def clean_df(df):
      #print(f"Final clean size: {len(df)}")
      
      df.to_csv("harp/data/raw/cms_2008_2010_samples_cleaned.csv", index=False)
+     return df
 
 
 ### group by 3 types of reviewer; lower level, mid level, senior level
