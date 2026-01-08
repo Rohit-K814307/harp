@@ -27,7 +27,7 @@ def clean_df(df):
      # keep relevant columns
      final_cols = mandatory_cols + optional_cols + financial_cols
      df = df[final_cols].copy()
-     print(f"Initial size: {len(df)}")
+     #print(f"Initial size: {len(df)}")
 
      # drop rows missing important things only
      df.dropna(subset=mandatory_cols, inplace=True)
@@ -36,47 +36,12 @@ def clean_df(df):
      df[optional_cols] = df[optional_cols].fillna("NONE")
      df[financial_cols] = df[financial_cols].fillna(0.0)
 
-     print(f"Final clean size: {len(df)}")
+     #print(f"Final clean size: {len(df)}")
      
      df.to_csv("harp/data/raw/cms_2008_2010_samples_cleaned.csv", index=False)
 
 
 ### group by 3 types of reviewer; lower level, mid level, senior level
-
-def identify_buckets(n, grouped_df):
-
-     sorted_scores = grouped_df["reviewer_score"].sort_values()
-    
-     _, bin_edges = pd.qcut(sorted_scores, q=n, retbins=True, duplicates='drop')
-
-     cutoffs = np.unique(bin_edges)
-    
-     return cutoffs
-
-def get_reviewer_score_cutoffs(n, grouped_df, score_col="reviewer_score", round_to_int=True):
-    if score_col not in grouped_df.columns:
-        raise ValueError(f"Column '{score_col}' not found in DataFrame")
-
-    scores = grouped_df[score_col].dropna().values
-    if len(scores) == 0:
-        raise ValueError("No non-NaN scores available to compute quantiles")
-
-    # e.g. for n=3 → quantile positions [0.0, 0.333..., 0.666..., 1.0]
-    quantiles = np.linspace(0, 1, n + 1)
-    edges = np.quantile(scores, quantiles)
-
-    # We only keep internal cutoffs (exclude min and max)
-    cutoffs = edges[1:-1]
-
-    if round_to_int:
-        cutoffs = [int(round(x)) for x in cutoffs]
-    else:
-        cutoffs = cutoffs.tolist()
-
-    print("Quantile positions:", [float(q) for q in quantiles])
-    print("Internal cutoffs (use by index):", cutoffs)
-
-    return cutoffs
 
 def group_by_reviewer(df, cutoffs, scores={"multi_payer":3, "short_stay":3, "surgical":2, "high_cost":1}):
      rng = np.random.default_rng(seed=42)
