@@ -208,7 +208,8 @@ def encode(df, save_dir):
           'reviewer_score', 'reviewer_reasons','rejection_reason_code', 
           'rejection_desc', 'DESYNPUF_ID', 'CLM_ID', 'PRVDR_NUM',
           'AT_PHYSN_NPI', 'OP_PHYSN_NPI',"CLM_ADMSN_DT", "NCH_BENE_DSCHRG_DT"
-]
+     ] + PRCDR_DROP
+     
      df = df.drop(drop_cols, axis=1)
 
      # claim_drg
@@ -220,8 +221,8 @@ def encode(df, save_dir):
      dgns_cols = [x for x in df.columns if "DGNS" in x]
      prcdr_cols = [x for x in df.columns if "PRCDR" in x]
 
-     df_dgns_encoded = encode_code_columns(df, dgns_cols, CONSTANTS_DGNS, "DGNS")
-     df_encoded = encode_code_columns(df_dgns_encoded, prcdr_cols, CONSTANTS_PRCDR, "PRCDR")
+     df_dgns_encoded = encode_code_columns(df, dgns_cols, "DGNS")
+     df_encoded = encode_code_columns(df_dgns_encoded, prcdr_cols, "PRCDR")
 
      df_encoded.to_csv(save_dir)
 

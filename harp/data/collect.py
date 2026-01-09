@@ -5,6 +5,8 @@ import shutil
 import glob
 import pandas as pd
 
+from harp.data.encodings import download_vocab
+
 
 # get the sample files from the cms synthetic data and put into data/raw/samples
 def retrieve_data(total_samples=5, save_dir="harp/data/raw/samples"):
@@ -40,3 +42,4 @@ def combine_csv(sample_dir="harp/data/raw/samples"):
 def collect(total_samples, save_dir):
      retrieve_data(total_samples, save_dir)
      combine_csv(save_dir)
+     download_vocab()

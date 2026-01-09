@@ -122,7 +122,6 @@ if __name__ == "__main__":
         generate_data(config=config)
     except Exception as e:
         print(f"\nPipeline failed with error: {e}")
-        # Optional: print traceback
         import traceback
         traceback.print_exc()
         sys.exit(1)
