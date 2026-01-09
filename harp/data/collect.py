@@ -28,12 +28,13 @@ def retrieve_data(total_samples=5, save_dir="harp/data/raw/samples"):
 
 # process the samples into one joined csv
 def combine_csv(sample_dir="harp/data/raw/samples"):
+     os.makedirs("harp/data/raw/processed", exist_ok=True)
 
-     save_dir = os.path.join("harp", "data", "raw", "cms_2008_2010_samples.csv")
+     save_dir = os.path.join("harp", "data", "raw", "processed", "cms_2008_2010_samples.csv")
 
      # print(save_dir)
      # print(os.path.join(harp_dir, "harp", sample_dir, "**", "*.csv"))
-
+     
      files = glob.glob(os.path.join(sample_dir, "**", "*.csv"), recursive=True)
      pd.concat([pd.read_csv(f) for f in files], ignore_index=True).to_csv(save_dir, index=False)
      

@@ -38,7 +38,7 @@ def clean_df(df):
 
      #print(f"Final clean size: {len(df)}")
      
-     df.to_csv("harp/data/raw/cms_2008_2010_samples_cleaned.csv", index=False)
+     df.to_csv("harp/data/raw/processed/cms_2008_2010_samples_cleaned.csv", index=False)
      return df
 
 

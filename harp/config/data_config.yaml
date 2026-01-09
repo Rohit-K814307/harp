@@ -1,5 +1,5 @@
 # Data Paths
-raw_input_path: "harp/data/raw/cms_2008_2010_samples.csv"
+raw_input_path: "harp/data/raw/processed/cms_2008_2010_samples.csv"
 output_dir_raw: "harp/data/raw/harp_dataset"
 output_dir_encoded: "harp/data/raw/harp_dataset_encoded"
 
