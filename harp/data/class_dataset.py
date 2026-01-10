@@ -1,138 +1,65 @@
 from torch.utils.data import Dataset
-import glob
-import os
 import pandas as pd
-import torch
-import numpy as np
 import ast
+import torch
 
-#dataset = HARPDataset(mode="train", costs=[0.0, 1.0, 2.0])
-
-# Access directly as attributes
-#x = dataset.x  # {'categorical': {...}, 'numerical': array(...)}
-#d = dataset.d  # numpy array of reviewer decisions
-#c = dataset.c  # tensor([0.0, 1.0, 2.0])
-#y = dataset.y  # numpy array of claim_status (0/1)
-
-# Or get individual samples
-#sample = dataset[0]
-#x_sample = sample['x']  # Features for one sample
-#d_sample = sample['d']  # Decisions for one sample
-#c_sample = sample['c']  # Costs (same for all)
-#y_sample = sample['y']  # Claim status (0/1)
 class HARPDataset(Dataset):
-    """Simple dataset for HARP. Provides x (features), d (decisions), c (costs)."""
-    
-    def __init__(self, dataset_dir="harp/data/raw/harp_dataset_encoded", mode="train", costs=None):
-        """
-        Args:
-            dataset_dir: Directory with CSV files
-            mode: "train", "val", or "test"
-            costs: List/tensor of costs per reviewer. Default: [0.0, 1.0, 2.0, ...]
-        """
-        # Find CSV file
-        files = glob.glob(os.path.join(dataset_dir, "*.csv"))
-        if not files:
-            files = glob.glob(os.path.join(dataset_dir, "**", "*.csv"), recursive=True)
-        
-        mode_file = None
-        for f in files:
-            if mode in os.path.basename(f).lower():
-                mode_file = f
-                break
-        
-        if mode_file is None:
-            raise ValueError(f"Mode '{mode}' not found in {dataset_dir}")
-        
-        self.df = pd.read_csv(mode_file)
-        
-        # Get categorical and numerical columns
-        self.categorical_columns = [
-            col for col in self.df.columns
-            if any(kw in col for kw in ['DRG', 'DGNS', 'PRCDR'])
-            and col not in ['claim_status', 'reviewer', 'reviewer_correct']
-        ]
-        
-        self.numerical_columns = [
-            col for col in self.df.columns
-            if col not in self.categorical_columns
-            and col not in ['claim_status', 'reviewer', 'reviewer_correct']
-            and any(kw in col for kw in ['AMT', 'CNT', 'LBLTY'])
-        ]
-        
-        # Store data for x (features)
-        categorical_data = {
-            col: self.df[col].fillna(-1).astype(np.int64).values
-            for col in self.categorical_columns
-        }
-        
-        if self.numerical_columns:
-            numerical_data = self.df[self.numerical_columns].fillna(0.0).astype(np.float32).values
-        else:
-            numerical_data = None
-        
-        # Store as self.x for easy access
-        self.x = {
-            'categorical': categorical_data,
-            'numerical': numerical_data
-        }
-        
-        # Keep for __getitem__ compatibility
-        self.categorical_data = categorical_data
-        self.numerical_data = numerical_data
-        
-        # Get claim_status (y)
-        self.y = self.df['claim_status'].values if 'claim_status' in self.df.columns else None
-        
-        # Get reviewer_correct (d)
-        if 'reviewer_correct' in self.df.columns:
-            self.d = []
-            for val in self.df['reviewer_correct']:
-                if isinstance(val, str):
-                    parsed = ast.literal_eval(val)
-                    self.d.append([bool(x) for x in parsed])
-                elif isinstance(val, (list, np.ndarray)):
-                    self.d.append([bool(x) for x in val])
-                else:
-                    self.d.append([bool(val)])
-            self.d = np.array(self.d, dtype=object)
-            self.n_reviewers = len(self.d[0]) if len(self.d) > 0 else 0
-        else:
-            self.d = None
-            self.n_reviewers = 0
-        
-        # Set costs (c)
-        if costs is None:
-            self.c = torch.tensor([float(i) for i in range(self.n_reviewers)], dtype=torch.float32) if self.n_reviewers > 0 else torch.tensor([0.0], dtype=torch.float32)
-        else:
-            self.c = torch.tensor(costs, dtype=torch.float32) if isinstance(costs, (list, np.ndarray)) else costs
-        
-        if self.n_reviewers > 0 and len(self.c) != self.n_reviewers:
-            raise ValueError(f"Costs length ({len(self.c)}) must match reviewers ({self.n_reviewers})")
-    
+     
+    def __init__(self, dataset_path, reviewer_costs, mode="train"):
+          
+        path_to_dataset = f"harp/data/raw/harp_dataset_encoded/{mode}.csv"
+        df = pd.read_csv(path_to_dataset)
+
+
+        # separate x, y, c, and d
+
+        c = reviewer_costs
+        d = df["reviewer_correct"].apply(ast.literal_eval).to_list()
+        y_reviewer = df["reviewer"].to_numpy()
+        y_claim_status = df["claim_status"].to_numpy()
+
+
+        ### break x into the required variables
+
+        df_x = df.drop(columns=["reviewer_correct", "reviewer", "claim_status"], axis=1)
+
+        cat_cols = [x for x in list(df_x.columns) if "ICD9" in x]
+        num_cols = [x for x in list(df_x.columns) if x not in cat_cols]
+
+        dgns_cols = [x for x in cat_cols if "DGNS" in x]
+        prcdr_cols = [x for x in cat_cols if x not in dgns_cols]
+
+        df_x_cat_dgns = df_x[dgns_cols].to_numpy()
+        df_x_cat_prcdr = df_x[prcdr_cols].to_numpy()
+        df_x_num = df_x[num_cols].to_numpy()
+
+
+        # prepare into torch format
+
+        self.c = torch.tensor(c, dtype=torch.float32)
+        self.d = torch.tensor(d, dtype=torch.float32)
+        self.y_reviewer = torch.tensor(y_reviewer, dtype=torch.long)
+        self.y_claim_status = torch.tensor(y_claim_status, dtype=torch.float32).unsqueeze(1)
+
+        self.x_cat_dgns = torch.tensor(df_x_cat_dgns, dtype=torch.long)
+        self.x_cat_prcdr = torch.tensor(df_x_cat_prcdr, dtype=torch.long)
+        self.x_num = torch.tensor(df_x_num, dtype=torch.float32)
+
     def __len__(self):
-        return len(self.df)
-    
+        return len(self.y_reviewer)
+
     def __getitem__(self, idx):
-        """Returns dict with 'x' (features), 'd' (decisions), 'c' (costs)."""
-        # x: categorical and numerical features
-        x = {
-            'categorical': {
-                col: torch.tensor(self.categorical_data[col][idx], dtype=torch.long)
-                for col in self.categorical_columns
-            },
-            'numerical': torch.tensor(self.numerical_data[idx], dtype=torch.float32) if self.numerical_data is not None else None
-        }
-        
-        # d: reviewer decisions
-        d = torch.tensor([bool(x) for x in self.d[idx]], dtype=torch.float32) if self.d is not None else None
-        
-        # y: claim status
-        y = torch.tensor(self.y[idx], dtype=torch.long) if self.y is not None else None
-        
         return {
-            'x': x,
-            'd': d,
-            'c': self.c,  # Same for all samples
-            'y': y
+            "x_cat_dgns": self.x_cat_dgns[idx],
+            "x_cat_prcdr": self.x_cat_prcdr[idx],
+            "x_num": self.x_num[idx],
+            "y_reviewer": self.y_reviewer[idx],
+            "y_claim_status": self.y_claim_status[idx],
+            "d": self.d[idx],
+            "c": self.c
         }
+
+
+
+
+
