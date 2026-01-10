@@ -3,6 +3,7 @@ import pandas as pd
 import ast
 import torch
 
+
 class HARPDataset(Dataset):
      
     def __init__(self, dataset_path, reviewer_costs, mode="train"):
@@ -34,7 +35,7 @@ class HARPDataset(Dataset):
         df_x_num = df_x[num_cols].to_numpy()
 
 
-        # prepare into torch format
+        # prepare into torch tensors
 
         self.c = torch.tensor(c, dtype=torch.float32)
         self.d = torch.tensor(d, dtype=torch.float32)
@@ -45,19 +46,27 @@ class HARPDataset(Dataset):
         self.x_cat_prcdr = torch.tensor(df_x_cat_prcdr, dtype=torch.long)
         self.x_num = torch.tensor(df_x_num, dtype=torch.float32)
 
+
     def __len__(self):
         return len(self.y_reviewer)
+
 
     def __getitem__(self, idx):
         return {
             "x_cat_dgns": self.x_cat_dgns[idx],
             "x_cat_prcdr": self.x_cat_prcdr[idx],
             "x_num": self.x_num[idx],
+
             "y_reviewer": self.y_reviewer[idx],
             "y_claim_status": self.y_claim_status[idx],
+
             "d": self.d[idx],
+
             "c": self.c
         }
+
+
+# make datasets for BASELINE MODELS
 
 
 
