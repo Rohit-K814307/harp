@@ -1,3 +1,3 @@
-[submodule "harp/models/baselines/calibrate_selective_classification"]
-	path = harp/models/baselines/calibrate_selective_classification
+[submodule "harp/models/calibrated_selective_classification"]
+	path = harp/models/calibrated_selective_classification
 	url = https://github.com/ajfisch/calibrated-selective-classification.git

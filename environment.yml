@@ -1,0 +1,18 @@
+name: harp
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - scikit-learn
+  - pytorch
+  - seaborn
+  - numpy
+  - pyyaml
+  - torchaudio
+  - matplotlib
+  - torchvision
+  - cpuonly
+  - ipykernel
+  - tqdm
+  - xlrd=2.0.1

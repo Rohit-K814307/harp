@@ -60,6 +60,15 @@ def get_vocab():
     return mode_to_vocab
 
 
+def get_vocab_size():
+    vocab = get_vocab()
+    
+    return {
+        "DGNS":len(vocab["DGNS"].keys()),
+        "PRCDR":len(vocab["PRCDR"].keys())
+    }
+
+
 def encode_code_columns(df, cols, mode):
     df_out = df.copy()
     df_out[code_cols_prcdr] = df_out[code_cols_prcdr].astype(str).replace(r'\.0$', '', regex=True)

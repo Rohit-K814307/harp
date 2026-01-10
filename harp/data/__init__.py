@@ -87,8 +87,8 @@ def generate_data(config):
 
 
 
-    print(f"... Calculating Reviewer Costs with {config["reviewer_cost_params"]["cost_mode"]}")
-    print(f"Found costs: {calculate_c(df_train, config["n_reviewers"], config["reviewer_cost_params"])}")
+    print(f"... Calculating Reviewer Costs with {config['reviewer_cost_params']['cost_mode']}")
+    print(f"Found costs: {calculate_c(df_train, config['n_reviewers'], config['reviewer_cost_params'])}")
 
     print("Dataset generation complete.")
 

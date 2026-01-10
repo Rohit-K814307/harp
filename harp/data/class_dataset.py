@@ -6,7 +6,7 @@ import torch
 
 class HARPDataset(Dataset):
      
-    def __init__(self, dataset_path, reviewer_costs, mode="train"):
+    def __init__(self, reviewer_costs, mode="train"):
           
         path_to_dataset = f"harp/data/raw/harp_dataset_encoded/{mode}.csv"
         df = pd.read_csv(path_to_dataset)
@@ -68,6 +68,8 @@ class HARPDataset(Dataset):
 
 # make datasets for BASELINE MODELS
 
+
+n = 2
 
 
 
