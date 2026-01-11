@@ -29,7 +29,7 @@ def txt_to_vocab(mode):
 
     file = f"harp/data/raw/icd9_vocab/CMS28_DESC_LONG_SHORT_{form}.xls"
     df = pd.read_excel(file)
-    df.insert(loc=0, column='CODING', value=df.index+1)
+    df.insert(loc=0, column='CODING', value=df.index+3)
 
     if mode == "DGNS":
         df.rename(columns={"DIAGNOSIS CODE": "ICD9"}, inplace=True)
@@ -40,7 +40,7 @@ def txt_to_vocab(mode):
         "ICD9":["MISSING", "OTH", "INVALID_999"],
         "LONG DESCRIPTION": ["missing val", "other val", "invalid val"],
         "SHORT DESCRIPTION": ["missing val", "other val", "invalid val"],
-        "CODING": [-1, 0, -2]
+        "CODING": [2, 1, 0]
     }
 
     return pd.concat([df, pd.DataFrame(missing_data)], ignore_index=True)
@@ -64,8 +64,8 @@ def get_vocab_size():
     vocab = get_vocab()
     
     return {
-        "DGNS":len(vocab["DGNS"].keys()),
-        "PRCDR":len(vocab["PRCDR"].keys())
+        "DGNS":len(vocab["DGNS"]),
+        "PRCDR":len(vocab["PRCDR"])
     }
 
 
@@ -81,6 +81,6 @@ def encode_code_columns(df, cols, mode):
 
     for col in cols:
         if col in df_out.columns:
-            df_out[col] = df_out[col].map(code_map).fillna(-1).astype(int)
+            df_out[col] = df_out[col].map(code_map).fillna(1).astype(int)
             
     return df_out

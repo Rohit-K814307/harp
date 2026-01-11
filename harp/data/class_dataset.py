@@ -66,10 +66,4 @@ class HARPDataset(Dataset):
         }
 
 
-# make datasets for BASELINE MODELS
-
-
-n = 2
-
-
 
