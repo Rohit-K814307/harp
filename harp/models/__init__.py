@@ -25,12 +25,12 @@ class ClassMinimalFNet:
           self.f = MinimalFNet(
                encoder = self.encoder,
                input_dim = args.encoding_dim,
-               hidden_dims = args.hidden_dims,
+               hidden_dims = args.f_hidden_dims,
                output_dim = 1,
                dropout = args.f_drouput
           ).train().to(self.device)
 
-          self.criterion = nn.BCEWithLogitsLoss(pos_weight=args.bce_pos_weight)
+          self.criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(args.bce_pos_weight))
           self.optimizer = optim.Adam(self.f.parameters(), lr=args.lr)
 
 
@@ -81,22 +81,22 @@ class ClassCSCSelector:
           self.f = MinimalFNet(
                encoder = self.encoder,
                input_dim = args.encoding_dim,
-               hidden_dims = args.hidden_dims,
+               hidden_dims = args.f_hidden_dims,
                output_dim = 1,
                dropout = args.f_drouput
-          ).eval().to(self.device)
+          ).to(self.device)
 
-          self.f.load_state_dict(torch.load(args.f_weights_path), map_location=self.device)
+          #self.f.load_state_dict(torch.load(args.f_weights_path), map_location=self.device)
+          self.f.eval()
 
           self.g = CSCSelector(
                f = self.f,
-               csc_input_dim = args.csc_input_dim,
                csc_hidden_dim = args.csc_hidden_dim,
                csc_num_layers = args.csc_num_layers,
                csc_dropout = args.csc_dropout,
           ).train().to(self.device)
 
-          self.criterion = nn.BCELoss()
+          self.criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(args.bce_pos_weight))
           self.optimizer = optim.Adam(self.g.parameters(), lr=args.lr)
 
      
@@ -104,9 +104,8 @@ class ClassCSCSelector:
 
           with torch.no_grad():
                logits = self.f(x_dgns, x_prcdr, x_numeric)
-               preds = logits.argmax(dim=1)
+               preds = (torch.sigmoid(logits) > 0.5).float()
                
-
           trust = self.g(x_dgns, x_prcdr, x_numeric)
 
           return trust, preds
@@ -123,7 +122,8 @@ class ClassCSCSelector:
           self.optimizer.zero_grad()
 
           trust, preds = self.forward(x_dgns, x_prcdr, x_numeric)
-          y_trust = (preds == y).float()
+
+          y_trust = (preds == y).float().view(-1)
 
           loss = self.criterion(trust, y_trust)
           self.backward(loss)
@@ -131,5 +131,3 @@ class ClassCSCSelector:
           self.optimizer.step()
 
           return loss.item()
-
-

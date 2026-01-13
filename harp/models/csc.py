@@ -33,7 +33,6 @@ class CSCSelector(nn.Module):
      def __init__(
           self, 
           f, # must be trained
-          csc_input_dim,
           csc_hidden_dim,
           csc_num_layers,
           csc_dropout=0.0,
@@ -44,7 +43,7 @@ class CSCSelector(nn.Module):
           self.f = f.eval()
 
           self.g = SelectiveNet(
-               csc_input_dim,
+               3,
                csc_hidden_dim,
                csc_num_layers,
                csc_dropout

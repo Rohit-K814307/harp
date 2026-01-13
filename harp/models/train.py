@@ -1,8 +1,12 @@
 import torch
 import time
 import os
+import argparse
+from torch.utils.data import DataLoader
 
 from harp.models import *
+from harp.data.load_config import load_config
+from harp.data.class_dataset import HARPDataset
 
 def train(args, train_loader):
      """
@@ -15,7 +19,7 @@ def train(args, train_loader):
      """
      print(f"{'='*60}")
      print(f"Starting Training...")
-     print(f"Mode: {'CSC Selector' if args.train_mode == 'csc' else 'Minimal F-Net'}")
+     print(f"Mode: {'CSC Selector' if args.train_mode == 'g_net' else 'Minimal F-Net'}")
      print(f"Device: {args.device}")
      print(f"Epochs: {args.epochs} | Batch Size: {args.batch_size} | LR: {args.lr}")
      print(f"{'='*60}\n")
@@ -23,7 +27,7 @@ def train(args, train_loader):
      if args.train_mode == 'f_net':
           model_wrapper = ClassMinimalFNet(args)
           model_name = "minimal_fnet"
-     elif args.train_mode == 'csc':
+     elif args.train_mode == 'g_net':
           model_wrapper = ClassCSCSelector(args)
           model_name = "csc_selector"
      else:
@@ -68,3 +72,22 @@ def train(args, train_loader):
      print(f"\n{'='*60}")
      print(f"Training Complete. Total time: {total_time/60:.2f} minutes.")
      print(f"{'='*60}")
+
+
+if __name__ == "__main__":
+     
+     parser = argparse.ArgumentParser(description="Generate HARP Dataset from CMS Claims")
+     parser.add_argument(
+          "--config", 
+          type=str, 
+          default="harp/config/csc_f_train_config.yaml", 
+          help="Path to the YAML configuration file (default: harp/config/csc_f_train_config.yaml)"
+     )
+
+     args = parser.parse_args()
+     config = load_config(args.config)
+
+     d = HARPDataset(config.reviewer_costs, "train")
+     train(config, DataLoader(d, batch_size=config.batch_size, shuffle=True))
+
+     
