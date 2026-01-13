@@ -121,34 +121,35 @@ def calculate_csc_thresholds(
 
 
 
-class CSC_Router:
+class CSC_Router(nn.Module):
 
     def __init__(self, g, data_loader, n_reviewers, coverages, g_weights_path):
+        super().__init__()
 
-        g.load_state_dict(torch.load(g_weights_path))
+        #g.load_state_dict(torch.load(g_weights_path, map_location='cpu'))
         g.eval()
-
         self.g = g
 
-        self.thresholds = torch.tensor(calculate_csc_thresholds(
-                                g=g,
-                                data_loader=data_loader,
-                                n_reviewers=n_reviewers,
-                                coverages=coverages
-        ))
+        raw_thresholds = calculate_csc_thresholds(
+            g=g,
+            data_loader=data_loader,
+            n_reviewers=n_reviewers,
+            coverages=coverages
+        )
+        
+        full_thresholds = raw_thresholds + [-1.0] 
+
+        self.register_buffer("thresholds", torch.tensor(full_thresholds))
 
     @torch.no_grad()
-    def forward(self, x_cat_dgns, x_cat_prcdr, x_num):
-    
-        sel_scores = self.g(x_cat_dgns, x_cat_prcdr, x_num).view(-1)  # (batch,)
-        
-        scores_exp = sel_scores.unsqueeze(1)  # (batch, 1)
-        thresholds_exp = self.thresholds.unsqueeze(0)  # (1, n_stages)
+    def forward(self, x_dgns, x_prcdr, x_numeric):
 
-        mask = scores_exp >= thresholds_exp
+        sel_scores = self.g(x_dgns, x_prcdr, x_numeric).view(-1)
+        
+        scores_exp = sel_scores.unsqueeze(1)
+        
+        mask = scores_exp >= self.thresholds.unsqueeze(0)
 
         stages = mask.float().argmax(dim=1)
 
         return stages
-
-
