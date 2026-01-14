@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch
 
 from harp.models.csc import CSCSelector
-from harp.models.f_networks import MinimalFNet
+from harp.models.f_networks import MinimalFNet, FNetwork
 from harp.models.encoder import HARPEncoder
 
 
@@ -131,3 +131,58 @@ class ClassCSCSelector:
           self.optimizer.step()
 
           return loss.item()
+
+
+class ClassWindowEarlyExit:
+    
+    def __init__(self, args, train_stage='both'):
+        self.device = torch.device(args.device)
+        self.train_stage = train_stage
+        
+        self.encoder = HARPEncoder(
+            encoding_dim=args.encoding_dim,
+            numeric_dim=args.numeric_dim,
+            num_enc_heads=args.num_enc_heads,
+            num_enc_layers=args.num_enc_layers,
+            dgns_vocab_size=args.dgns_vocab_size,
+            prcdr_vocab_size=args.prcdr_vocab_size
+        ).train().to(self.device)
+        
+        junior_hidden = getattr(args, 'junior_hidden', [128, 64])
+        senior_hidden = getattr(args, 'senior_hidden', [256, 256, 128, 64])
+        
+        self.model = FNetwork(
+            encoder=self.encoder,
+            input_dim=args.encoding_dim,
+            junior_hidden=junior_hidden,
+            senior_hidden=senior_hidden,
+            output_dim=1
+        ).train().to(self.device)
+        
+        self.criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(args.bce_pos_weight))
+        self.optimizer = optim.Adam(self.model.parameters(), lr=args.lr)
+    
+    def train_step(self, batch):
+        x_dgns = batch["x_cat_dgns"].to(self.device)
+        x_prcdr = batch["x_cat_prcdr"].to(self.device)
+        x_numeric = batch["x_num"].to(self.device)
+        y = batch["y_claim_status"].to(self.device)
+        
+        self.optimizer.zero_grad()
+        outputs = self.model(x_dgns, x_prcdr, x_numeric, exit_point=self.train_stage)
+        
+        if self.train_stage == 'junior':
+            pred = outputs['junior_pred']
+        elif self.train_stage == 'senior':
+            pred = outputs['senior_pred']
+        else:
+            pred = outputs['senior_pred']
+        
+        loss = self.criterion(pred, y)
+        loss.backward()
+        self.optimizer.step()
+        
+        return loss.item()
+    
+    def get_model(self):
+        return self.model
