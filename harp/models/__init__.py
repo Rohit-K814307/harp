@@ -2,7 +2,11 @@ import torch.optim as optim
 import torch.nn as nn
 import torch
 
-from harp.models.csc import CSCSelector
+try:
+    from harp.models.csc import CSCSelector
+except ImportError:
+    CSCSelector = None  # CSC module not available
+
 from harp.models.f_networks import MinimalFNet, FNetwork
 from harp.models.encoder import HARPEncoder
 
