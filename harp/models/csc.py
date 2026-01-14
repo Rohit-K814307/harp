@@ -61,7 +61,7 @@ class CSCSelector(nn.Module):
           ent  = entropy_from_logits(logits)
 
           features = torch.stack([conf, marg, ent], dim=1)
-          return self.g(features)
+          return self.g(features), logits
 
 
 # calculate csc thresholds given f, g, and val dataset
@@ -86,7 +86,7 @@ def calculate_csc_thresholds(
                 batch["x_num"],
             )
             # forward
-            sel_scores = g(*x).view(-1)  # robust to batch=1
+            sel_scores, _ = g(*x).view(-1)  # robust to batch=1
             selector_scores.append(sel_scores.cpu().numpy())
 
     selector_scores = np.concatenate(selector_scores)
@@ -125,7 +125,7 @@ class CSC_Router(nn.Module):
     def __init__(self, g, data_loader, n_reviewers, coverages, g_weights_path):
         super().__init__()
 
-        #g.load_state_dict(torch.load(g_weights_path, map_location='cpu'))
+        g.load_state_dict(torch.load(g_weights_path, map_location='cpu'))
         g.eval()
         self.g = g
 
@@ -143,7 +143,7 @@ class CSC_Router(nn.Module):
     @torch.no_grad()
     def forward(self, x_dgns, x_prcdr, x_numeric):
 
-        sel_scores = self.g(x_dgns, x_prcdr, x_numeric).view(-1)
+        sel_scores, _ = self.g(x_dgns, x_prcdr, x_numeric).view(-1)
         
         scores_exp = sel_scores.unsqueeze(1)
         

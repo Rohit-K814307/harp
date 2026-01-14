@@ -19,7 +19,7 @@ def train(args, train_loader):
      """
      print(f"{'='*60}")
      print(f"Starting Training...")
-     print(f"Mode: {'CSC Selector' if args.train_mode == 'g_net' else 'Minimal F-Net'}")
+     print(f"Mode: {args.train_mode}")
      print(f"Device: {args.device}")
      print(f"Epochs: {args.epochs} | Batch Size: {args.batch_size} | LR: {args.lr}")
      print(f"{'='*60}\n")
