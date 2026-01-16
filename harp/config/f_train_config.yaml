@@ -2,11 +2,13 @@ train_mode: "f_net"
 
 # misc
 device: "mps"
-save_dir: "harp/models/checkpoints/csc_f"
+save_dir: "harp/models/checkpoints/f"
 log_interval: 1000
 save_freq: 5
 batch_size: 32
 reviewer_costs: [2.365, 3.004]
+val_freq: 5
+log_dir: "harp/logs"
 
 # model configs
 
@@ -25,4 +27,4 @@ f_drouput: 0.1
 ## optimization hyperparams
 bce_pos_weight: 0.2
 lr: 1e-4
-epochs: 20
+epochs: 100

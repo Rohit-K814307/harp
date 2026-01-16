@@ -1,14 +1,14 @@
-train_mode: "g_net"
+train_mode: "harp_pi"
 
 # misc
 device: "mps"
-save_dir: "harp/models/checkpoints/csc_g"
+save_dir: "harp/models/checkpoints/harp_pi"
 log_interval: 1000
 save_freq: 5
 batch_size: 32
 reviewer_costs: [2.365, 3.004]
 val_freq: 5
-log_dir: "harp/logs"
+log_dir: "logs"
 
 # model configs
 
@@ -25,10 +25,12 @@ f_hidden_dims: [32, 16, 8, 4]
 f_drouput: 0.1
 f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_1.pt"
 
-## g
-csc_hidden_dim: 4
-csc_num_layers: 3
-csc_dropout: 0.1
+## pi
+pi_hidden_dims: [32, 16, 8]
+
+## harp hyperparams
+gumbel_tau: 5.0
+error_penalty: 3.5 # don't collapse to always using f even if it's wrong so we have to do penalty > max(reviewer_costs)
 
 ## optimization hyperparams
 bce_pos_weight: 0.2

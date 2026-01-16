@@ -1,0 +1,45 @@
+device: "cpu" # mps/cuda on eval support not added yet
+batch_size: 32
+reviewer_costs: [2.365, 3.004]
+output_dir: "harp/models/results"
+
+# model stuff - same as training pls
+## encoder
+encoding_dim: 32
+numeric_dim: 7
+num_enc_heads: 4
+num_enc_layers: 3
+dgns_vocab_size: 14435
+prcdr_vocab_size: 3862
+
+## f
+f_hidden_dims: [32, 16, 8, 4]
+f_drouput: 0.1
+
+## g
+csc_hidden_dim: 4
+csc_num_layers: 3
+csc_drouput: 0.1 
+
+## pi
+pi_hidden_dims: [32, 16, 8]
+
+
+
+# eval stuff
+
+
+f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_1.pt"
+g_weights_path: "harp/models/checkpoints/csc_g/g_net_epoch_1.pt"
+pi_weights_path: "harp/models/checkpoints/harp_pi/harp_pi_epoch_1.pt"
+
+## Baseline Hyperparameters
+
+### harp + baseline error penalty
+error_penalty: 3.5 
+
+### confidence cutoff for naive e.g., 0.90 is trust AI if prob > 90%
+naive_threshold: 0.90
+
+### csc coverages
+csc_coverages: [0.40, 0.70, 0.85]

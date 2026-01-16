@@ -86,7 +86,8 @@ def calculate_csc_thresholds(
                 batch["x_num"],
             )
             # forward
-            sel_scores, _ = g(*x).view(-1)  # robust to batch=1
+            sel_scores, _ = g(*x)
+            sel_scores = sel_scores.view(-1)
             selector_scores.append(sel_scores.cpu().numpy())
 
     selector_scores = np.concatenate(selector_scores)
@@ -122,10 +123,9 @@ def calculate_csc_thresholds(
 
 class CSC_Router(nn.Module):
 
-    def __init__(self, g, data_loader, n_reviewers, coverages, g_weights_path):
+    def __init__(self, g, data_loader, n_reviewers, coverages):
         super().__init__()
 
-        g.load_state_dict(torch.load(g_weights_path, map_location='cpu'))
         g.eval()
         self.g = g
 
@@ -143,12 +143,32 @@ class CSC_Router(nn.Module):
     @torch.no_grad()
     def forward(self, x_dgns, x_prcdr, x_numeric):
 
-        sel_scores, _ = self.g(x_dgns, x_prcdr, x_numeric).view(-1)
+        sel_scores, _ = self.g(x_dgns, x_prcdr, x_numeric)
         
-        scores_exp = sel_scores.unsqueeze(1)
+        scores_exp = sel_scores.view(-1).unsqueeze(1)
         
         mask = scores_exp >= self.thresholds.unsqueeze(0)
 
         stages = mask.float().argmax(dim=1)
 
         return stages
+    
+
+class Naive: # always pick lowest cost reviewer
+    def __init__(self, f_model, threshold=0.90):
+        self.f = f_model
+        self.device = f_model.device if hasattr(f_model, 'device') else torch.device('cpu')
+        self.threshold = threshold
+
+    def forward_f(self, x_dgns, x_prcdr, x_numeric):
+        return self.f(x_dgns, x_prcdr, x_numeric)
+    
+
+class Oracle: # actually looks at ground truth and then figures out the cost (this is the best we would ever do e.g. 100%)
+    def __init__(self, f_model, error_penalty=1.0):
+        self.f = f_model
+        self.device = f_model.device if hasattr(f_model, 'device') else torch.device('cpu')
+        self.error_penalty = error_penalty
+
+    def forward_f(self, x_dgns, x_prcdr, x_numeric):
+        return self.f(x_dgns, x_prcdr, x_numeric)

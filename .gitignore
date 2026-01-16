@@ -1,5 +1,7 @@
 harp/data/raw
 harp/models/checkpoints
+results
+logs
 
 
 .DS_Store

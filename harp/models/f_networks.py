@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 
 
@@ -29,5 +28,3 @@ class MinimalFNet(nn.Module):
         x = self.net(x)
         return x
 
-
-# f_net using small llm
