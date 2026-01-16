@@ -2,6 +2,7 @@ harp/data/raw
 harp/models/checkpoints
 results
 logs
+master.ipynb
 
 
 .DS_Store
