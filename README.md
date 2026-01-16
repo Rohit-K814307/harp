@@ -22,7 +22,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 Algorithmic code implementation of "Human-Aware Routing Policies for Multi-Stage Decision Pipelines."
 
-Read the [paper](www.google.com) for technical details and a full analysis of the results.
+Read the [paper](https://www.google.com) for technical details and a full analysis of the results.
 
 [(back to top)](#table-of-contents)
 
