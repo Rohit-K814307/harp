@@ -3,22 +3,21 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  - numpy
   - pandas
   - scikit-learn
-  - scipy           
-  - statsmodels      
   - pytorch
-  - torchvision
-  - torchaudio
-  - cpuonly
-  - matplotlib
   - seaborn
+  - numpy
   - pyyaml
-  - tqdm
+  - torchaudio
+  - matplotlib
+  - torchvision
+  - cpuonly
   - ipykernel
+  - tqdm
   - xlrd=2.0.1
+  - tensorboard
+  - pip
   - pip:
-    - python-box     
-    - requests       
-    - appnope        
+      - python-box==7.3.2
+      - munkres==1.1.4
