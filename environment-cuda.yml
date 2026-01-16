@@ -1,0 +1,25 @@
+name: harp
+channels:
+  - pytorch
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - scikit-learn
+  - pytorch
+  - pytorch-cuda
+  - seaborn
+  - numpy
+  - pyyaml
+  - torchaudio
+  - matplotlib
+  - torchvision
+  - ipykernel
+  - tqdm
+  - xlrd=2.0.1
+  - tensorboard
+  - pip
+  - pip:
+      - python-box==7.3.2
+      - munkres==1.1.4

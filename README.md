@@ -42,6 +42,13 @@ conda env create -f environment.yml
 conda activate harp
 ```
 
+Or alternatively, for CUDA support:
+```bash
+conda env create -f environment-cuda.yml
+
+conda activate harp
+```
+
 Once installed, you can verify the installation by running:
 
 ```bash
