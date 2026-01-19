@@ -263,19 +263,63 @@ deterministic.
 % =====================
 \section{Background and Related Work}
 
+We overview selective clasification and prediction policies, algorithmic triage, 
+and organizational resource management models in current literature. 
+
+\subsection{Selective Prediction and The Reject Option}
+
+The basis for HARP is selective prediction, where a classifier has a reject option to abstain from making a 
+prediction when a defined uncertainty score is high \cite{elyaniv2010}. These works generally deal with the 
+statistical modelling of the trade-off bewtween risk, which is the error rate, and coverage, the fraction of samples
+classified by the autonomous model. While previous literature has established confidence-based thresholds with 
+statistical guarantees \cite{geifman2017}, they typically treat abstention as the end-state of the system. However,
+in institutional pipelines abstaining is not always the end of the decision, with several heirarchies of human 
+reviewers analyzing samples for different costs.
+
+\subsection{Calibrated Selective Classification (CSC) as a Baseline}
+
+One of the main challenges in the model routing domain is ensuring that the error probability of a routing model is
+accurately captured by model confidence scores. Work by \cite{fisch2024,angelopoulos2022} in Calibrated Selective Classification (CSC)
+has developed methods to provide statistical guarantees on risk by calibrating confidence scores within a separate,
+non-routing model.
+
+While existing works in CSC typically focus on the binary "predict" or "defer" case, we extend these statistical
+guarantees to serve as a multi-stage baseline. Specifically, by calibrating a sequence of thresholds to partition 
+a confidence space into $n$ distinct regions, where $n$ represents the number of reviewers in the institutional heirarchy,
+we create a strong calibration-based benchmark to compare with HARP's learned routing policies.
+
+\subsection{Learning to Defer (L2D)}
+
+Learning to Defer, or L2D, is a deferral policy where the automated decision-making model and the deferral 
+policy should be optimized together to account for when there exists a human partner \cite{madras2018}. L2D generally assumes
+a single-stage system with a homogenous pool of experts \cite{mozannar2021} or just one expert. Our work extends L2D by recognizing
+that human expertise can be structured heirarchically, especially when cases are escalated to increasingly
+accurate human reviewer and higher costs are incurred on the institution.
+
+
+
 % =====================
 % IV. Data, Materials, or Methods
 % =====================
-\section{Materials and Methods}
+\section{Data Processing}
 
-Describe the data, materials, experimental setup, or methodological framework.
-This section should be detailed enough to allow reproducibility.
+\subsection{Data Source}
 
-\subsection{Data or Materials}
-Describe sources, collection procedures, and properties.
 
-\subsection{Methodology}
-Explain analytical, computational, or experimental methods used.
+\subsection{Synthetic Data Generation}
+
+
+
+
+
+
+
+
+
+
+\section{Model Architecture}
+
+
 
 % =====================
 % V. Results

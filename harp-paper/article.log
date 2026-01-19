@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  4 JAN 2026 18:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  17 JAN 2026 12:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -280,7 +280,9 @@ Package pdftex.def Info: example-image.pdf  used on input line 111.
 
 
 
-[2] (./article.bbl
+[2]
+
+(./article.bbl
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `en'. Using the pattern for
 ** the default language instead.
@@ -301,26 +303,22 @@ Before submitting the final camera ready copy, remember to:
 
 
 
-
-
-[3
-
-] (./article.aux)
+[3] (./article.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3499 strings out of 473190
- 54506 string characters out of 5715801
- 465069 words of memory out of 5000000
- 26719 multiletter control sequences out of 15000+600000
+ 3501 strings out of 473190
+ 54536 string characters out of 5715801
+ 465076 words of memory out of 5000000
+ 26721 multiletter control sequences out of 15000+600000
  596794 words of font info for 111 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
  57i,16n,65p,386b,353s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmss17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on article.pdf (3 pages, 182965 bytes).
+Output written on article.pdf (3 pages, 186759 bytes).
 PDF statistics:
  98 PDF objects out of 1000 (max. 8388607)
  60 compressed objects within 1 object stream
