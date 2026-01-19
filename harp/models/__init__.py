@@ -264,10 +264,10 @@ class ClassHARPNet:
 
           pi_logits = self.forward_pi(f_logits, x_dgns, x_prcdr, x_numeric).detach()
           
-          # For validation, we use hard decisions with low temp to approximate real usage
+          # val use low temp not scheduled
           decisions = F.gumbel_softmax(pi_logits, tau=0.5, hard=True)
 
-          # Calculate Validation Cost (Loss)
+          # calc val cost
           ai_wrong = (f_preds != y).float()
           cost_ai = self.error_penalty * ai_wrong
 
