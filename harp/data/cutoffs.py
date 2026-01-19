@@ -64,24 +64,32 @@ def calculate_cutoffs(df, scores, n_reviewers, n_init, random_state, plot=False)
 
 
 def plot_cutoffs(scores, cutoffs):
-    sns.set_theme(style="whitegrid")
-    plt.figure(figsize=(5, 3), dpi=300)
+     sns.set_theme(style="whitegrid")
+     plt.figure(figsize=(3.15, 3), dpi=300)
 
-    counts, _, _ = plt.hist(scores, bins=20, alpha=0.85, color='#34495e', edgecolor='white')
-    y_max = max(counts)
+     counts, _, _ = plt.hist(scores, bins=20, alpha=0.85, color="#2d6195", edgecolor='white')
+     y_max = max(counts)
 
-    for i,c in enumerate(cutoffs[1:-1]):
-        plt.axvline(c, color="#697274AB", linestyle='--', linewidth=1)
-        plt.text(c, y_max * 1.05, f'{round(c, 1)}\n<-R{i+1}\nR{i+2}->', 
-                 color="#000000", ha='center', fontweight="bold", va='bottom', fontsize=6)
+     for i,c in enumerate(cutoffs[1:-1]):
+          plt.axvline(c, color="#3FD0F1AB", linestyle='--', linewidth=1)
+          plt.text(
+               c, y_max * 1.05, f'{round(c, 1)}\n←R{i+1}\nR{i+2}→', 
+               color="#000000", 
+               ha='center', 
+               fontweight="bold", 
+               va='bottom', 
+               fontsize=6,
+               fontfamily='monospace',
+               bbox=dict(facecolor='white', edgecolor='none', pad=1)
+          )
 
-    plt.title("Complexity Score Distribution & Tier Thresholds", fontweight='bold', pad=10, fontsize=8)
-    plt.xlabel("Complexity Score", fontsize=7)
-    plt.ylabel("Count", fontsize=7)
-    plt.xticks(fontsize=6)
-    plt.yticks(fontsize=6)
+     plt.title("Complexity Score Distribution & Tier Thresholds", fontweight='bold', pad=10, fontsize=8)
+     plt.xlabel("Complexity Score", fontsize=7)
+     plt.ylabel("Count", fontsize=7)
+     plt.xticks(fontsize=6)
+     plt.yticks(fontsize=6)
     
-    plt.ylim(top=y_max * 1.35)
+     plt.ylim(top=y_max * 1.35)
     
-    plt.tight_layout()
-    plt.show()
+     plt.tight_layout()
+     plt.show()

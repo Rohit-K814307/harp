@@ -1,7 +1,7 @@
 from harp.data.collect import collect
 from harp.data.process import clean_df, group_by_reviewer, inject_rejected, encode
 from harp.data.cutoffs import calculate_cutoffs
-from harp.data.reviewer_costs import calculate_c
+from harp.data.reviewer_costs import calculate_c, plot_c_modes
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -88,7 +88,13 @@ def generate_data(config):
 
 
     print(f"... Calculating Reviewer Costs with {config['reviewer_cost_params']['cost_mode']}")
-    print(f"Found costs: {calculate_c(df_train, config['n_reviewers'], config['reviewer_cost_params'])}")
+
+    mrr_costs = calculate_c(df_train, config['n_reviewers'], config['reviewer_cost_params'])
+    scarcity_costs = calculate_c(df_train, config['n_reviewers'], {"cost_mode":"scarcity", "scarcity_c_base":config['reviewer_cost_params']["scarcity_c_base"]})
+
+    print(f"Found costs: {mrr_costs if config['reviewer_cost_params']['cost_mode'] == 'mrr' else scarcity_costs}")
+
+    plot_c_modes(mrr_costs, scarcity_costs)
 
     print("Dataset generation complete.")
 

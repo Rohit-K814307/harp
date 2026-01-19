@@ -95,7 +95,7 @@ with increasing costs, with the objective of minizing system loss while also res
 human resource consstraints. 
 
 We study this framework in the context of structured application review pipelines motivated by 
-Social Security Disability Insurance (SSDI) claim resolution, where decisions are sequential,
+insurance claim pipelines, including Medicare and Social Security Disability Insurance claim resolution, where decisions are sequential,
 resource constrained, and subject to high institutional stakes. This setting shows the limitations
 of single-stage selective prediction and motivats the need for routing-aware decision policies.
 
@@ -303,23 +303,121 @@ accurate human reviewer and higher costs are incurred on the institution.
 % =====================
 \section{Data Processing}
 
-\subsection{Data Source}
+To evaluate the HARP framework, we collect raw administrative
+medical records from the Centers for Medicare and Medicaid 
+Service Medicare Claims Synthetic Public Use Files (CMS DE1.0 SynPUF 2008-2010).
+We develop a data pipeline to structure these raw claims in a multi-stage
+decision environment.
 
+\subsection{Assigning Reviewer Heirarchies}
 
-\subsection{Synthetic Data Generation}
+In order to assign learnable reviewer heirarchies, we treat
+a reviewer $n$ to have a higher complexity than the previous
+reviewer $n-1$, where a complexity score $S(x)$, for each claim
+$x$, is defined as:
 
+\begin{align}
+    S(x) = \sum_{i \in \text{indicators}} w_i \cdot 1_i(x),
+\end{align}
 
+where $w_i$ is the weight for the respective indicator and
+for the indicator function $1_i(x)$ active when claim $x$ meets any indicator below:
 
+\begin{itemize}
+\item multi-payer involvement
+\item a short-stay duration of less than one day
+\item any completed surgical operation
+\item a high-cost bill defined as $>$\$20,000
+\end{itemize}
 
+\begin{figure}[h!]
+    \includegraphics[width=0.9\columnwidth]{complexity_thresh.png}
+    \caption{K-means determined thresholds between $n=2$ reviewer classes defined across the complexity scores}
+    \label{fig:kmeansthresh}
+\end{figure}
 
+To partition the complexity scores for each claim into a heirarchy of $n$ reviewers, we apply K-means clustering
+to the distribution of $S(X)$. Let $B = \{b_1, b_2, \dots, b_n\}$ be the set of K-means centroids, then we calculate
+the threshold complexity scores between each reviewer tier $C = \{c_1, c_2, \dots, c_{n-1}\}$ as the midpoint
+between the nodes in $B$, i.e.
+\begin{align}
+c_n = \frac{b_n + b_{n+1}}{2}.
+\end{align}
 
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth, height=0.3\textheight]{example-image-a}
+    \caption{Human-Aware Routing Policies (HARP) model architecture. We use a shared encoder and frozen $f$ in order to train a router $\pi$ to learn the HARP routing policy.}
+    \label{fig:harparchitecture}
+\end{figure*}
 
+\begin{figure}[h!]
+    \includegraphics[width=0.9\columnwidth]{figures/mrr_v_scarcity.png}
+    \caption{MRR costs vs. Scarcity costs across reviewer heirarchy show that MRR is best used in this dataset.}
+    \label{fig:mrrbetter}
+\end{figure}
 
+\subsection{Determining Reviewer Performance and Costs \label{revcosts}}
+
+With a real-world goverment dataset containing whether the $n$th reviewer escalates to the $n+1$th stage or makes a final decision,
+we could statistically determine the costs of a specific reviewer. We model this by leveraging the claim complexity
+score $S(X)$ and the reviewer's capabilities.
+
+We predefine error rates $E = \{E_1, E_2, \dots, E_n\}$ for each reviewer tier, where reviewer $n = ||E||$ has a 5\%
+error rate, since they must have the "final say" in the claim process and make a small percentage of administrative errors
+that were not caught at stage $i < n$. 
+
+We calculate costs for each reviewer stage up till $n$ reviewer stages as $c_s$ using two distinct methods:
+
+\subsubsection{Marginal Risk Reduction (MRR)} is proportional to expected accuracy gain from escalating to a 
+higher-tier reviewer. If $E_t$ is the error rate of reviewer tier $t < n$, then the cost of a reviewer at tier $t$ 
+$c_t$ is defined as:
+
+\begin{align}
+    c_s = \lambda \cdot (E_{t-1} - E_{t}),
+\end{align}
+
+for a scaling factor $\lambda$.
+
+\subsubsection{Scarcity} is inversely proportional to the frequency of a specific reviewer tier, so $c_t$ is defined
+as:
+
+\begin{align}
+    c_t = c_{base} \cdot \frac{N_1}{N_t},
+\end{align}
+
+where $c_{base}$ is the base cost of reviewer 1. 
+
+We use MRR for calculating $c_t$ due to since MRR can help HARP learn tangible accuracy gains in its cost, 
+as shown by the increasing costs of MRR in fig. \ref{fig:mrrbetter}.
 
 
 \section{Model Architecture}
 
+As shown in fig. \ref{fig:harparchitecture}, HARP consists of three main models: a shared encoder, $f$, and $\pi$. $f$ is any automated model that outputs
+accept/deny logits. First, $f$ and the encoder are trained as a warm-start. Once trained, $f$ and the encoder are frozen.
+$\pi$ is the routing model HARP learns that takes the output of the frozen encoder and the entropy of $f$'s output
+logit. Let $f$ output an accept logit for an encoded claim $x$, then the entropy of $f(x)$ is defined as the Binary Cross Entropy
+of $f(x)$. 
 
+
+\subsection{Routing and Loss Formulation}
+
+As shown in fig. \ref{fig:harparchitecture}, HARP leverages the gumbel-softmax trick on $\pi(x)$ for a differentiable,
+"discrete" routing choice. We use this to formulate a total system loss on which we optimize to train $\pi$.
+
+We define the total system loss as
+\begin{align}
+    \mathcal{L}_{system} = r \cdot 1_g(0) + \sum_{i=1}^{n}  ((1_g(i) \cdot (1 - d_i)) \cdot \lambda_{\text{penalty}}) + c_i,
+\end{align}
+
+where $r$ is the binary cross entropy of $f(x)$, $1_g$ is an indicator function that is active if the 
+gumbel softmax of $\pi(x)$ is 1 at index $i$, $d_i$ is if the reviewer at tier $i$ accurately identified the claim (0 or 1),
+$\lambda_{\text{penalty}}$ is an error penalty hyperparameter, and $c_i$ is the institutional cost of a reviewer $i$
+calculated by the methods described in sec. \ref{revcosts}.
+
+We minimize this cost during training and during inference, we route by calculating $argmax(\pi(x))$ instead of
+the gumbel-softmax.
 
 % =====================
 % V. Results
@@ -337,7 +435,7 @@ Interpret the results, explain trends, limitations, and unexpected outcomes.
 Relate findings back to the motivation and prior work.
 
 % =====================
-% VII. Conclusion and Future Work
+% VI. Conclusion and Future Work
 % =====================
 \section{Conclusion and Future Work}
 
@@ -348,9 +446,6 @@ Summarize key contributions and outline potential directions for future research
 % =====================
 \section*{Author Note}
 The authors declare no competing interests.
-
-\section*{Author Contributions}
-Describe each author’s contribution to the work.
 
 % =====================
 % References
