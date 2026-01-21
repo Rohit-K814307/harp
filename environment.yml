@@ -12,7 +12,6 @@ dependencies:
   - torchaudio
   - matplotlib
   - torchvision
-  - cpuonly
   - ipykernel
   - tqdm
   - xlrd=2.0.1

@@ -1,0 +1,32 @@
+# Window Early Exit Training Config
+
+
+device: "mps"
+save_dir: "harp/models/checkpoints/window_early_exit"
+log_interval: 500
+save_freq: 5
+batch_size: 128 
+
+
+
+## encoder
+encoding_dim: 32
+numeric_dim: 7
+num_enc_heads: 4
+num_enc_layers: 3
+dgns_vocab_size: 14435
+prcdr_vocab_size: 3862
+
+## window early exit
+junior_hidden: [128, 64]
+senior_hidden: [256, 128, 64, 32] 
+
+## optimization hyperparams
+bce_pos_weight: 0.2
+lr: 2e-4 
+epochs: 15  
+
+## training
+train_stage: "both"
+
+  
