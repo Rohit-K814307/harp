@@ -29,9 +29,9 @@ pi_hidden_dims: [32, 16, 8]
 # eval stuff
 
 
-f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_1.pt"
-g_weights_path: "harp/models/checkpoints/csc_g/g_net_epoch_1.pt"
-pi_weights_path: "harp/models/checkpoints/harp_pi/harp_pi_epoch_1.pt"
+f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_100.pt"
+g_weights_path: "harp/models/checkpoints/csc_g/g_net_epoch_100.pt"
+pi_weights_path: "harp/models/checkpoints/harp_pi/harp_pi_epoch_100.pt"
 
 ## Baseline Hyperparameters
 
