@@ -1,7 +1,7 @@
 train_mode: "harp_pi"
 
 # misc
-device: "cuda"
+device: "cpu"
 save_dir: "harp/models/checkpoints/harp_pi"
 log_interval: 1000
 save_freq: 5

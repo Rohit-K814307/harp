@@ -1,7 +1,7 @@
 train_mode: "f_net"
 
 # misc
-device: "cuda"
+device: "cpu"
 save_dir: "harp/models/checkpoints/f"
 log_interval: 1000
 save_freq: 5

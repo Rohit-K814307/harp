@@ -1,7 +1,7 @@
 train_mode: "g_net"
 
 # misc
-device: "cuda"
+device: "cpu"
 save_dir: "harp/models/checkpoints/csc_g"
 log_interval: 1000
 save_freq: 5
