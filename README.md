@@ -1,5 +1,3 @@
-![harp-diag](images/harp_diagram.jpg)
-
 # HARP: Human-Aware Routing Policies for Multi-Stage Decision Pipelines
 
 High-stakes institutional decisions, such as insurance claim review, increasingly 
