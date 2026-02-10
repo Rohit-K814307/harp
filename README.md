@@ -2,7 +2,18 @@
 
 # HARP: Human-Aware Routing Policies for Multi-Stage Decision Pipelines
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+High-stakes institutional decisions, such as insurance claim review, increasingly 
+combine machine learning with multi-stage human review. Cases are either resolved by a 
+model or escalated through tiers of reviewers with different costs and expertise. Standard 
+selective prediction treats deferral as a binary choice and does not capture these hierarchical 
+pipelines. We introduce Human-Aware Routing Policies (HARP), a framework that treats routing 
+as a learned policy over stages (model vs.\ reviewer tiers) and minimizes expected system loss 
+under human cost. We formalize single and multi-stage deferral and train a stochastic routing 
+policy with Gumbel-softmax on a loss that combines prediction errors and reviewer costs. We compare 
+HARP to a confidence-threshold naive policy, multi-stage calibrated selective classification (CSC),
+and an oracle that knows ground truth on Medicare-style data with a two-tier reviewer hierarchy and
+costs set by marginal risk reduction. Overall, HARP improves the accuracy-cost tradeoff over the 
+naive policy and matches or outperforms CSC while learning routing end-to-end.
 
 ## Table of Contents
 
@@ -22,7 +33,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 Algorithmic code implementation of "Human-Aware Routing Policies for Multi-Stage Decision Pipelines."
 
-Read the [paper](https://www.google.com) for technical details and a full analysis of the results.
+Read the [paper](https://drive.google.com/file/d/1UoqddL2oJkUzHDF3VPKgC1EpD7ubQGor/view?usp=sharing) for technical details and a full analysis of the results.
 
 [(back to top)](#table-of-contents)
 
