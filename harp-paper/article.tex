@@ -39,14 +39,24 @@
 % Abstract
 % =====================
 \begin{abstract}
-A concise summary of the motivation, approach, and main findings of the work.
-Avoid citations and equations. Typically 150--250 words.
+High-stakes institutional decisions, such as insurance claim review, increasingly 
+combine machine learning with multi-stage human review. Cases are either resolved by a 
+model or escalated through tiers of reviewers with different costs and expertise. Standard 
+selective prediction treats deferral as a binary choice and does not capture these hierarchical 
+pipelines. We introduce Human-Aware Routing Policies (HARP), a framework that treats routing 
+as a learned policy over stages (model vs.\ reviewer tiers) and minimizes expected system loss 
+under human cost. We formalize single and multi-stage deferral and train a stochastic routing 
+policy with Gumbel-softmax on a loss that combines prediction errors and reviewer costs. We compare 
+HARP to a confidence-threshold naive policy, multi-stage calibrated selective classification (CSC),
+and an oracle that knows ground truth on Medicare-style data with a two-tier reviewer hierarchy and
+costs set by marginal risk reduction. Overall, HARP improves the accuracy-cost tradeoff over the 
+naive policy and matches or outperforms CSC while learning routing end-to-end.
 \end{abstract}
 
 \hfill\break
 {\small
 \textbf{\textit{Keywords---}}
-keyword1, keyword2, keyword3, keyword4
+Institutional Decisions, Routing, Human-aware
 }
 
 \IEEEpeerreviewmaketitle
@@ -74,7 +84,7 @@ guarantees. These approaches have been shown to be effective in applications whe
 alternative to automated prediction is a single, homogenous human expert.
 
 However, real-world decision pipelines rarely conform to single-stage abstraction. In practice,
-human review is heirarchical, where casis can be routed to reviewers with differing levels
+human review is hierarchical, where cases can be routed to reviewers with differing levels
 of expertise, authority, and cost. For example, in insurance claim resolution, an application
 may be resolved automatically, reviewed by a junior examiner, escalated to a senior specialist,
 or forwarded to an administrative judge. Modelling deferral as a binary decision process does
@@ -88,30 +98,23 @@ on heuristic or fixed routing rules, or do not explicitly connect to the selecti
 framework. As a result, existing methods provide limited guidance for designing multi-stage
 pipelines under explicit budget constraints.
 
-In this work, we introduce Human-Aware Routing Policies (HARP), a framework for selecive
+In this work, we introduce Human-Aware Routing Policies (HARP), a framework for selective
 prediction in multi-stage human-AI decision pipelines. Rather than making deferral a binary
-action, HARP formulates decision making as a routing problem over a heirarchy of human reviewers
-with increasing costs, with the objective of minizing system loss while also respective
-human resource consstraints. 
+action, HARP formulates decision making as a routing problem over a hierarchy of human reviewers
+with increasing costs, with the objective of minimizing system loss while also respecting
+human resource constraints. 
 
 We study this framework in the context of structured application review pipelines motivated by 
 insurance claim pipelines, including Medicare and Social Security Disability Insurance claim resolution, where decisions are sequential,
 resource constrained, and subject to high institutional stakes. This setting shows the limitations
-of single-stage selective prediction and motivats the need for routing-aware decision policies.
+of single-stage selective prediction and motivates the need for routing-aware decision policies.
 
 Our work makes the following contributions:
 \begin{itemize}
- \item contrib1
- \item contrib 2
- \item contrib 3
+ \item We formalize multi-stage selective prediction with a hierarchy of human reviewers and extend the single-stage risk--coverage formulation to a budget-constrained routing objective (Eq.~\eqref{eq:minmulti}).
+ \item We propose HARP: a routing policy $\pi$ that takes encoder features and model uncertainty (entropy of $f(x)$), trained with Gumbel-softmax on a system loss that combines prediction errors and reviewer costs (Sec.~IV).
+ \item We evaluate on CMS-style claim data with a simulated two-tier reviewer hierarchy and MRR reviewer costs. HARP improves over a confidence-threshold naive policy and is competitive with or better than multi-stage CSC on the accuracy--cost tradeoff.
 \end{itemize}
-
-% Example figure
-\begin{figure}[t]
-\includegraphics[width=0.9\columnwidth]{example-image}
-\caption{Example figure caption.}
-\label{fig:example}
-\end{figure}
 
 % =====================
 % II. Problem Formulation
@@ -208,7 +211,7 @@ r_\tau(x) =
 
 The optimization problem in Eq.~\eqref{eq:minbinary} is applicable when we have a binary decision of
 using policy $f$ or abstaining and deferring to an arbitrary human reviewer. However, when we have a 
-heirarchical set of $k$ human reviewers $H = \{0,1, \dots ,k\}$, each with increasing costs $c_{h_k}$, we have
+hierarchical set of $k$ human reviewers $H = \{0,1, \dots ,k\}$, each with increasing costs $c_{h_k}$, we have
 $c_{h_k}$ increasing when $k \geq 1$.
 
 For the purposes of this paper, single-stage refers to $|H| = 1$, and multi-stage is when $|H| > 1$. 
@@ -263,17 +266,17 @@ deterministic.
 % =====================
 \section{Background and Related Work}
 
-We overview selective clasification and prediction policies, algorithmic triage, 
+We overview selective classification and prediction policies, algorithmic triage, 
 and organizational resource management models in current literature. 
 
 \subsection{Selective Prediction and The Reject Option}
 
 The basis for HARP is selective prediction, where a classifier has a reject option to abstain from making a 
 prediction when a defined uncertainty score is high \cite{elyaniv2010}. These works generally deal with the 
-statistical modelling of the trade-off bewtween risk, which is the error rate, and coverage, the fraction of samples
+statistical modelling of the trade-off between risk, which is the error rate, and coverage, the fraction of samples
 classified by the autonomous model. While previous literature has established confidence-based thresholds with 
 statistical guarantees \cite{geifman2017}, they typically treat abstention as the end-state of the system. However,
-in institutional pipelines abstaining is not always the end of the decision, with several heirarchies of human 
+in institutional pipelines abstaining is not always the end of the decision, with several hierarchies of human 
 reviewers analyzing samples for different costs.
 
 \subsection{Calibrated Selective Classification (CSC) as a Baseline}
@@ -285,7 +288,7 @@ non-routing model.
 
 While existing works in CSC typically focus on the binary "predict" or "defer" case, we extend these statistical
 guarantees to serve as a multi-stage baseline. Specifically, by calibrating a sequence of thresholds to partition 
-a confidence space into $n$ distinct regions, where $n$ represents the number of reviewers in the institutional heirarchy,
+a confidence space into $n$ distinct regions, where $n$ represents the number of reviewers in the institutional hierarchy,
 we create a strong calibration-based benchmark to compare with HARP's learned routing policies.
 
 \subsection{Learning to Defer (L2D)}
@@ -293,7 +296,7 @@ we create a strong calibration-based benchmark to compare with HARP's learned ro
 Learning to Defer, or L2D, is a deferral policy where the automated decision-making model and the deferral 
 policy should be optimized together to account for when there exists a human partner \cite{madras2018}. L2D generally assumes
 a single-stage system with a homogenous pool of experts \cite{mozannar2021} or just one expert. Our work extends L2D by recognizing
-that human expertise can be structured heirarchically, especially when cases are escalated to increasingly
+that human expertise can be structured hierarchically, especially when cases are escalated to increasingly
 accurate human reviewer and higher costs are incurred on the institution.
 
 
@@ -309,9 +312,9 @@ Service Medicare Claims Synthetic Public Use Files (CMS DE1.0 SynPUF 2008-2010).
 We develop a data pipeline to structure these raw claims in a multi-stage
 decision environment.
 
-\subsection{Assigning Reviewer Heirarchies}
+\subsection{Assigning Reviewer Hierarchies}
 
-In order to assign learnable reviewer heirarchies, we treat
+In order to assign learnable reviewer hierarchies, we treat
 a reviewer $n$ to have a higher complexity than the previous
 reviewer $n-1$, where a complexity score $S(x)$, for each claim
 $x$, is defined as:
@@ -336,7 +339,7 @@ for the indicator function $1_i(x)$ active when claim $x$ meets any indicator be
     \label{fig:kmeansthresh}
 \end{figure}
 
-To partition the complexity scores for each claim into a heirarchy of $n$ reviewers, we apply K-means clustering
+To partition the complexity scores for each claim into a hierarchy of $n$ reviewers, we apply K-means clustering
 to the distribution of $S(X)$. Let $B = \{b_1, b_2, \dots, b_n\}$ be the set of K-means centroids, then we calculate
 the threshold complexity scores between each reviewer tier $C = \{c_1, c_2, \dots, c_{n-1}\}$ as the midpoint
 between the nodes in $B$, i.e.
@@ -344,26 +347,19 @@ between the nodes in $B$, i.e.
 c_n = \frac{b_n + b_{n+1}}{2}.
 \end{align}
 
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth, height=0.3\textheight]{example-image-a}
-    \caption{Human-Aware Routing Policies (HARP) model architecture. We use a shared encoder and frozen $f$ in order to train a router $\pi$ to learn the HARP routing policy.}
-    \label{fig:harparchitecture}
-\end{figure*}
-
 \begin{figure}[h!]
-    \includegraphics[width=0.9\columnwidth]{figures/mrr_v_scarcity.png}
-    \caption{MRR costs vs. Scarcity costs across reviewer heirarchy show that MRR is best used in this dataset.}
+    \includegraphics[width=0.9\columnwidth]{mrr_v_scarcity.png}
+    \caption{MRR costs vs.\ Scarcity costs across reviewer hierarchy show that MRR is best used in this dataset.}
     \label{fig:mrrbetter}
 \end{figure}
 
 \subsection{Determining Reviewer Performance and Costs \label{revcosts}}
 
-With a real-world goverment dataset containing whether the $n$th reviewer escalates to the $n+1$th stage or makes a final decision,
+With a real-world government dataset containing whether the $n$th reviewer escalates to the $n+1$th stage or makes a final decision,
 we could statistically determine the costs of a specific reviewer. We model this by leveraging the claim complexity
 score $S(X)$ and the reviewer's capabilities.
 
-We predefine error rates $E = \{E_1, E_2, \dots, E_n\}$ for each reviewer tier, where reviewer $n = ||E||$ has a 5\%
+We predefine error rates $E = \{E_1, E_2, \dots, E_n\}$ for each reviewer tier, where reviewer $n = \|E\|$ has a 5\%
 error rate, since they must have the "final say" in the claim process and make a small percentage of administrative errors
 that were not caught at stage $i < n$. 
 
@@ -388,13 +384,21 @@ as:
 
 where $c_{base}$ is the base cost of reviewer 1. 
 
-We use MRR for calculating $c_t$ due to since MRR can help HARP learn tangible accuracy gains in its cost, 
-as shown by the increasing costs of MRR in fig. \ref{fig:mrrbetter}.
+We use MRR for calculating $c_t$ because MRR can help HARP learn tangible accuracy gains in its cost, 
+as shown by the increasing costs of MRR in Fig.~\ref{fig:mrrbetter}.
+
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth, trim=0 370 0 0, clip]{harp_diag.pdf}
+    \caption{Human-Aware Routing Policies (HARP) model architecture. We use a shared encoder and frozen $f$ in order to train a router $\pi$ to learn the HARP routing policy.}
+    \label{fig:harparchitecture}
+\end{figure*}
 
 
 \section{Model Architecture}
 
-As shown in fig. \ref{fig:harparchitecture}, HARP consists of three main models: a shared encoder, $f$, and $\pi$. $f$ is any automated model that outputs
+As shown in Fig.~\ref{fig:harparchitecture}, HARP consists of three main models: a shared encoder, $f$, and $\pi$. $f$ is any automated model that outputs
 accept/deny logits. First, $f$ and the encoder are trained as a warm-start. Once trained, $f$ and the encoder are frozen.
 $\pi$ is the routing model HARP learns that takes the output of the frozen encoder and the entropy of $f$'s output
 logit. Let $f$ output an accept logit for an encoded claim $x$, then the entropy of $f(x)$ is defined as the Binary Cross Entropy
@@ -403,20 +407,21 @@ of $f(x)$.
 
 \subsection{Routing and Loss Formulation}
 
-As shown in fig. \ref{fig:harparchitecture}, HARP leverages the gumbel-softmax trick on $\pi(x)$ for a differentiable,
+As shown in Fig.~\ref{fig:harparchitecture}, HARP leverages the gumbel-softmax trick on $\pi(x)$ for a differentiable,
 "discrete" routing choice. We use this to formulate a total system loss on which we optimize to train $\pi$.
 
 We define the total system loss as
 \begin{align}
+    \label{eq:systemloss}
     \mathcal{L}_{system} = r \cdot 1_g(0) + \sum_{i=1}^{n}  ((1_g(i) \cdot (1 - d_i)) \cdot \lambda_{\text{penalty}}) + c_i,
 \end{align}
 
 where $r$ is the binary cross entropy of $f(x)$, $1_g$ is an indicator function that is active if the 
 gumbel softmax of $\pi(x)$ is 1 at index $i$, $d_i$ is if the reviewer at tier $i$ accurately identified the claim (0 or 1),
 $\lambda_{\text{penalty}}$ is an error penalty hyperparameter, and $c_i$ is the institutional cost of a reviewer $i$
-calculated by the methods described in sec. \ref{revcosts}.
+calculated by the methods described in Sec.~\ref{revcosts}.
 
-We minimize this cost during training and during inference, we route by calculating $argmax(\pi(x))$ instead of
+We minimize this cost during training and during inference, we route by calculating $\operatorname{argmax}(\pi(x))$ instead of
 the gumbel-softmax.
 
 % =====================
@@ -424,22 +429,58 @@ the gumbel-softmax.
 % =====================
 \section{Results}
 
-Present results objectively, using tables and figures where appropriate.
+We evaluate HARP on the encoded CMS claim dataset with a train/test/validation split, a frozen
+$f$, and a reviewer hierarchy with $n=2$. Reviewer costs $c_i$ are set via Marginal Risk Reduction.
+We compare (1) Naive: routing by a single confidence threshold on $f$; (2) Oracle: optimal routing 
+\textit{knowing} ground-truth outcomes (lower bound); (3) Calibrated Selective Classification (CSC):
+multi-stage calibrated selective with coverage-based threshold; (4) HARP: Learned router $\pi$ trained 
+with system loss in Eq.~\ref{eq:systemloss}. 
+
+\begin{table}[h!]
+\centering
+\caption{Test-set accuracy and risk by method.}
+\label{tab:results}
+\begin{tabular}{lcc}
+\toprule
+Method & Accuracy & Risk \\
+\midrule
+Naive  & 0.7999 & 0.0034 \\
+Oracle & \textbf{0.9519} & \textbf{0.0509} \\
+CSC    & 0.8754 & 0.0539 \\
+\textbf{HARP (ours)} & \textbf{0.8965} & \textbf{0.1034} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:results} reports the test-set metrics and mean cost per claim for each method at comparable
+coverage levels. HARP improves over Naive and outperforms CSC, while performing lower than the Oracle. 
 
 % =====================
 % VI. Discussion
 % =====================
 \section{Discussion}
 
-Interpret the results, explain trends, limitations, and unexpected outcomes.
-Relate findings back to the motivation and prior work.
+HARP improves over a single confidence threshold (Naive) by explicitly modeling 
+multiple reviewer tiers and their costs, and performs on par with or better than 
+multi-stage CSC while learning routing end-to-end. The biggest gains are when reviewer 
+costs and error rates differ across tiers. Limitations are as follows: (1) reviewer correctness 
+$d_i$ is simulated from complexity scores rather than observed; (2) costs are set by MRR/scarcity
+heuristics rather than real institutional data; (3) we do not yet provide formal risk-coverage 
+guarantees as in CSC. These results support learned routing policies in multi-stage pipelines when 
+cost and accuracy tradeoffs are explicit.
+
 
 % =====================
-% VI. Conclusion and Future Work
+% VII. Conclusion and Future Work
 % =====================
 \section{Conclusion and Future Work}
 
-Summarize key contributions and outline potential directions for future research.
+We introduced HARP, a framework for human-aware routing in multi-stage decision pipelines.
+By formulating routing as a stochastic policy $\pi_\phi(s \mid x)$ and minimizing expected
+system loss (prediction loss plus reviewer costs), HARP learns when to use the model versus
+each reviewer tier. On CMS-style claim data with two reviewer tiers, HARP outperforms a naive 
+confidence policy and is competitive with or better than multi-stage CSC.
+
 
 % =====================
 % Author Notes

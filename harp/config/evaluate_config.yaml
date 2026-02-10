@@ -19,7 +19,7 @@ f_drouput: 0.1
 ## g
 csc_hidden_dim: 4
 csc_num_layers: 3
-csc_drouput: 0.1 
+csc_dropout: 0.1 
 
 ## pi
 pi_hidden_dims: [32, 16, 8]
@@ -29,9 +29,9 @@ pi_hidden_dims: [32, 16, 8]
 # eval stuff
 
 
-f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_100.pt"
-g_weights_path: "harp/models/checkpoints/csc_g/g_net_epoch_100.pt"
-pi_weights_path: "harp/models/checkpoints/harp_pi/harp_pi_epoch_100.pt"
+f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_10.pt"
+g_weights_path: "harp/models/checkpoints/csc_g/g_net_epoch_10.pt"
+pi_weights_path: "harp/models/checkpoints/harp_pi/harp_pi_epoch_10.pt"
 
 ## Baseline Hyperparameters
 

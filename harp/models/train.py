@@ -30,10 +30,10 @@ def train(args, train_loader, val_loader):
           model_name = "minimal_fnet"
      elif args.train_mode == 'g_net':
           model_wrapper = ClassCSCSelector(args)
-          model_name = "csc_selector"
+          model_name = "g_net"
      elif args.train_mode == 'harp_pi':
           model_wrapper = ClassHARPNet(args)
-          model_name = "harp"
+          model_name = "harp_pi"
      else:
           raise ValueError(f"Invalid train_mode in args: {args.train_mode}. Choose 'f_net' or 'csc' or 'g_net' or 'harp_pi'.")
      
@@ -69,7 +69,7 @@ def train(args, train_loader, val_loader):
 
           writer.add_scalar('Loss/Train_Epoch', avg_train_loss, epoch)
           
-          avg_val_loss = 0.0
+          avg_val_loss = None
 
           if epoch % args.val_freq == 0:
                model_wrapper.eval()
@@ -81,20 +81,23 @@ def train(args, train_loader, val_loader):
                          val_loss = model_wrapper.val_step(batch)
                          running_val_loss += val_loss
 
-               avg_val_loss = running_val_loss / num_val_batches
-
-               writer.add_scalar('Loss/Validation', avg_val_loss, epoch)
-               writer.add_scalars('Loss/Combined', {
-                    'Train': avg_train_loss,
-                    'Validation': avg_val_loss
-               }, epoch)
+               if num_val_batches > 0:
+                    avg_val_loss = running_val_loss / num_val_batches
+                    writer.add_scalar('Loss/Validation', avg_val_loss, epoch)
+                    writer.add_scalars('Loss/Combined', {
+                         'Train': avg_train_loss,
+                         'Validation': avg_val_loss
+                    }, epoch)
+               else:
+                    avg_val_loss = float('nan')
                
                epoch_time = time.time() - epoch_start_time
 
                model_wrapper.train()
           
+          val_str = f"Val Loss: {avg_val_loss:.6f}" if avg_val_loss is not None else "Val Loss: N/A"
           print(f"--> [Epoch {epoch}/{args.epochs}] Completed in {epoch_time:.2f}s | "
-               f"Train Loss: {avg_train_loss:.6f} | Val Loss: {avg_val_loss:.6f}")
+               f"Train Loss: {avg_train_loss:.6f} | {val_str}")
 
           if args.save_dir and epoch % args.save_freq == 0:
                save_path = os.path.join(args.save_dir, f"{model_name}_epoch_{epoch}.pt")

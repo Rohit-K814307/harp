@@ -1,5 +1,5 @@
 from harp.data.collect import collect
-from harp.data.process import clean_df, group_by_reviewer, inject_rejected, encode
+from harp.data.process import clean_df, group_by_reviewer, inject_rejected, encode, compute_and_save_numeric_stats
 from harp.data.cutoffs import calculate_cutoffs
 from harp.data.reviewer_costs import calculate_c, plot_c_modes
 
@@ -85,7 +85,8 @@ def generate_data(config):
     encode(df_val, os.path.join(config['output_dir_encoded'], "val.csv"))
     encode(df_test, os.path.join(config['output_dir_encoded'], "test.csv"))
 
-
+    train_csv = os.path.join(config['output_dir_encoded'], "train.csv")
+    compute_and_save_numeric_stats(train_csv)
 
     print(f"... Calculating Reviewer Costs with {config['reviewer_cost_params']['cost_mode']}")
 

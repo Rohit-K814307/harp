@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  19 JAN 2026 13:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  9 FEB 2026 20:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex
-(/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex
+**/Users/rohitkulkarni/Documents/projects/harp/harp-paper/article.tex
+(/Users/rohitkulkarni/Documents/projects/harp/harp-paper/article.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (./IEEEtran.cls
@@ -258,51 +258,37 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ** ATTENTION: \authorblockA is deprecated (line 36). Use \IEEEauthorblockA instead.
 
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 104.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 114.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 104.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 114.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<example-image.pdf, id=1, 321.2pt x 240.9pt>
-File: example-image.pdf Graphic file (type pdf)
-<use example-image.pdf>
-Package pdftex.def Info: example-image.pdf  used on input line 111.
-(pdftex.def)             Requested size: 226.79846pt x 170.10284pt.
-
-Underfull \vbox (badness 1762) has occurred while \output is active []
-
-
 
 [1{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
- </usr/local/texlive/2025/texmf-dist/tex/latex/mwe/example-image.pdf>]
+]
 
 
 
 [2]
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 330.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 333.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-<figures/complexity_thresh.png, id=31, 228.1323pt x 205.2468pt>
+<figures/complexity_thresh.png, id=24, 228.1323pt x 205.2468pt>
 File: figures/complexity_thresh.png Graphic file (type png)
 <use figures/complexity_thresh.png>
-Package pdftex.def Info: figures/complexity_thresh.png  used on input line 334.
+Package pdftex.def Info: figures/complexity_thresh.png  used on input line 337.
 (pdftex.def)             Requested size: 226.79846pt x 204.04991pt.
-<example-image-a.pdf, id=33, 321.2pt x 240.9pt>
-File: example-image-a.pdf Graphic file (type pdf)
-<use example-image-a.pdf>
-Package pdftex.def Info: example-image-a.pdf  used on input line 349.
-(pdftex.def)             Requested size: 464.40968pt x 201.60841pt.
-<figures/mrr_v_scarcity.png, id=34, 219.9417pt x 231.9867pt>
+<figures/mrr_v_scarcity.png, id=26, 219.9417pt x 231.9867pt>
 File: figures/mrr_v_scarcity.png Graphic file (type png)
 <use figures/mrr_v_scarcity.png>
-Package pdftex.def Info: figures/mrr_v_scarcity.png  used on input line 355.
+Package pdftex.def Info: figures/mrr_v_scarcity.png  used on input line 351.
 (pdftex.def)             Requested size: 226.79846pt x 239.22151pt.
 
 
@@ -311,16 +297,28 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 [3 <./figures/complexity_thresh.png>]
+<figures/harp_diag.pdf, id=33, 722.7pt x 542.025pt>
+File: figures/harp_diag.pdf Graphic file (type pdf)
+<use figures/harp_diag.pdf>
+Package pdftex.def Info: figures/harp_diag.pdf  used on input line 393.
+(pdftex.def)             Requested size: 490.19843pt x 115.74232pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[4 </usr/local/texlive/2025/texmf-dist/tex/latex/mwe/example-image-a.pdf> <./figures/mrr_v_scarcity.png>] (./article.bbl
+
+
+[4 <./figures/mrr_v_scarcity.png>] (./article.bbl
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `en'. Using the pattern for
 ** the default language instead.
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `en'. Using the pattern for
 ** the default language instead.
+
+
 )
 
 ** Conference Paper **
@@ -335,29 +333,25 @@ Before submitting the final camera ready copy, remember to:
 
 
 
-
-
-[5
-
-] (./article.aux)
+[5 <./figures/harp_diag.pdf>] (./article.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3561 strings out of 473190
- 55928 string characters out of 5715801
- 465176 words of memory out of 5000000
- 26776 multiletter control sequences out of 15000+600000
- 598186 words of font info for 113 fonts, out of 8000000 for 9000
+ 3556 strings out of 473190
+ 55699 string characters out of 5715801
+ 465201 words of memory out of 5000000
+ 26769 multiletter control sequences out of 15000+600000
+ 601017 words of font info for 116 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 57i,16n,65p,386b,313s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmss17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on article.pdf (5 pages, 289065 bytes).
+ 57i,16n,65p,377b,313s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on article.pdf (5 pages, 327646 bytes).
 PDF statistics:
- 124 PDF objects out of 1000 (max. 8388607)
- 75 compressed objects within 1 object stream
+ 130 PDF objects out of 1000 (max. 8388607)
+ 79 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 22 words of extra memory for PDF output out of 10000 (max. 10000000)
 

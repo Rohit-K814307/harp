@@ -1,6 +1,8 @@
 from harp.data.encodings import *
 
+import json
 import numpy as np
+import os
 import pandas as pd
 
 
@@ -226,3 +228,19 @@ def encode(df, save_dir):
 
      df_encoded.to_csv(save_dir)
 
+
+def compute_and_save_numeric_stats(train_csv_path, stats_path=None, eps=1e-7):
+    df = pd.read_csv(train_csv_path)
+    df_x = df.drop(columns=["reviewer_correct", "reviewer", "claim_status"], axis=1)
+    num_cols = [c for c in df_x.columns if "ICD9" not in c]
+    stats = {}
+    for c in num_cols:
+        mean = float(df_x[c].mean(skipna=True))
+        std = float(df_x[c].std(skipna=True))
+        if pd.isna(std) or std == 0:
+            std = eps
+        stats[c] = {"mean": mean, "std": std}
+    if stats_path is None:
+        stats_path = os.path.join(os.path.dirname(train_csv_path), "numeric_stats.json")
+    with open(stats_path, "w") as f:
+        json.dump(stats, f, indent=2)

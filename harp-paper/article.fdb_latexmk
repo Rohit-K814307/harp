@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex article"] 1768846889.59821 "article.aux" "article.bbl" "article" 1768847586.14984 0
+["bibtex article"] 1770698606.51538 "article.aux" "article.bbl" "article" 1770698642.13288 0
   "./IEEEtran.bst" 1766439521.20422 59223 2083a3fc870ca3aacea8071478081723 ""
   "./refs.bib" 1768668090.60392 6849 69a851de7d735a7d8d06fccf1d92ebe2 ""
-  "article.aux" 1768847585.83934 4224 7be9333362b0e607c901c4e2c12c4be3 "pdflatex"
+  "article.aux" 1770698641.80707 4288 37f8742af5fe54f821e043953f75336e "pdflatex"
   (generated)
   "article.bbl"
   "article.blg"
   (rewritten before read)
-["pdflatex"] 1768847585.25204 "/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex" "article.pdf" "article" 1768847586.14999 0
-  "/Users/rohitkulkarni/Documents/projects/conductr/harp/harp-paper/article.tex" 1768847585.07684 19520 408bb854095c22ceef5388dd5425c918 ""
+["pdflatex"] 1770698641.21717 "/Users/rohitkulkarni/Documents/projects/harp/harp-paper/article.tex" "article.pdf" "article" 1770698642.13303 0
+  "/Users/rohitkulkarni/Documents/projects/harp/harp-paper/article.tex" 1770698641.03805 22997 8b760b620ed47a306c231abb2018dda1 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -53,7 +53,6 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmss17.pfb" 1255129361 97155 77b0a2ea02ee9c950117adae5f41f9c9 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1136849748 44729 811d6c62865936705a31c797a1d5dada ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb" 1136849748 44656 0cbca70e0534538582128f6b54593cca ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb" 1136849748 46026 6dab18b61c907687b520c72847215a68 ""
@@ -84,10 +83,6 @@
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/trig.sty" 1717359999 4023 2c9f39712cf7b43d3eb93a8bbd5c8f67 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1716410060 29785 9f93ab201fe5dd053afcc6c1bcf7d266 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1279039959 678 4792914a8f45be57bb98413425e4c7af ""
-  "/usr/local/texlive/2025/texmf-dist/tex/latex/mwe/example-image-a.pdf" 1522444699 12160 f5a33a472bc2acb8800c3e00764d8ad1 ""
-  "/usr/local/texlive/2025/texmf-dist/tex/latex/mwe/example-image-a.tex" 1336516272 466 d1a94627f2e1cbf8876e228d48d436ec ""
-  "/usr/local/texlive/2025/texmf-dist/tex/latex/mwe/example-image.pdf" 1522444699 17568 8e23b7d568553840c1e0d1200fbe2c18 ""
-  "/usr/local/texlive/2025/texmf-dist/tex/latex/mwe/example-image.tex" 1336516272 472 ad3eb26372aefe8d1055d70eab56d506 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1ptm.fd" 1137110629 961 15056f4a61917ceed3a44e4ac11fcc52 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ts1ptm.fd" 1137110629 619 96f56dc5d1ef1fe1121f1cfeec70ee0c ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/tools/array.sty" 1730496337 14552 27664839421e418b87f56fa4c6f66b1a ""
@@ -97,10 +92,11 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1741450574 3345740 46b66fdb0378f7bf5921b5eabf1762b8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1766439505.20143 201383 9b4fa0e5bd5ea4d99740727e0320cae1 ""
-  "article.aux" 1768847585.83934 4224 7be9333362b0e607c901c4e2c12c4be3 "pdflatex"
-  "article.bbl" 1768846889.71745 3466 26af188dbd99096fa1b0622782b00eef "bibtex article"
-  "article.tex" 1768847585.07684 19520 408bb854095c22ceef5388dd5425c918 ""
+  "article.aux" 1770698641.80707 4288 37f8742af5fe54f821e043953f75336e "pdflatex"
+  "article.bbl" 1770698606.64759 3466 26af188dbd99096fa1b0622782b00eef "bibtex article"
+  "article.tex" 1770698641.03805 22997 8b760b620ed47a306c231abb2018dda1 ""
   "figures/complexity_thresh.png" 1768790061.38709 45285 30c1b8c028d25037a640b80b4ab9df29 ""
+  "figures/harp_diag.pdf" 1770688103.78969 62020 9d36f652296d1689b7cfb087d0fed64d ""
   "figures/mrr_v_scarcity.png" 1768790112.24172 49316 03c01d00fe610e7d10738769de867b1e ""
   (generated)
   "article.aux"

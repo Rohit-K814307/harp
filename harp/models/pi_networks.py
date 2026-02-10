@@ -33,8 +33,10 @@ class HARPRouter(nn.Module):
      def forward(self, f_out, x_dgns, x_prcdr, x_numeric):
           
           f_pdf = self.sigmoid(f_out.detach())
-
-          f_entropy = F.binary_cross_entropy(f_pdf, f_pdf, reduction='none')
+          # Clamp to avoid log(0) and NaN in BCE(p, p) when p is 0 or 1
+          eps = 1e-7
+          f_pdf_safe = f_pdf.clamp(eps, 1.0 - eps)
+          f_entropy = F.binary_cross_entropy(f_pdf_safe, f_pdf_safe, reduction='none')
 
           with torch.no_grad():
                x_enc = self.encoder(x_dgns, x_prcdr, x_numeric).detach()

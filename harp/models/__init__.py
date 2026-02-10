@@ -34,7 +34,9 @@ class ClassMinimalFNet:
           self.encoder.train()
           self.f.train()
 
-          self.criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(args.bce_pos_weight))
+          self.criterion = nn.BCEWithLogitsLoss(
+               pos_weight=torch.tensor(args.bce_pos_weight, device=self.device)
+          )
           self.optimizer = optim.Adam(self.f.parameters(), lr=args.lr)
 
      def forward(self, x_dgns, x_prcdr, x_numeric):
@@ -113,7 +115,9 @@ class ClassCSCSelector:
                csc_dropout = args.csc_dropout,
           ).train().to(self.device)
 
-          self.criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(args.bce_pos_weight))
+          self.criterion = nn.BCEWithLogitsLoss(
+               pos_weight=torch.tensor(args.bce_pos_weight, device=self.device)
+          )
           self.optimizer = optim.Adam(self.g.parameters(), lr=args.lr)
 
      def forward(self, x_dgns, x_prcdr, x_numeric):
@@ -173,9 +177,9 @@ class ClassHARPNet:
           self.tau_schedule = {}
           tau_start = args.gumbel_tau
           tau_end = 0.5                 
-          
-          for e in range(args.epochs):
-               progress = e / max(1, args.epochs - 1) 
+          # Training loop uses epoch 1..epochs; align keys so get(epoch, 0.5) is correct
+          for e in range(1, args.epochs + 1):
+               progress = (e - 1) / max(1, args.epochs - 1) 
                tau_val = tau_start - (tau_start - tau_end) * progress
                self.tau_schedule[e] = max(tau_val, tau_end)
 

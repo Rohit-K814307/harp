@@ -298,12 +298,15 @@ def evaluate(config):
         f,
         config.csc_hidden_dim,
         config.csc_num_layers,
-        config.csc_drouput
+        getattr(config, "csc_dropout", getattr(config, "csc_drouput", 0.1)),
     ).to(device).eval()
 
     if os.path.exists(config.g_weights_path):
         g.load_state_dict(torch.load(config.g_weights_path, map_location=device, weights_only=True))
-    
+        print(f"Loaded CSC selector from {config.g_weights_path}")
+    else:
+        print(f"Warning: CSC weights not found at {config.g_weights_path}; using untrained selector.")
+
     pi = HARPRouter(
         encoder, 
         len(config.reviewer_costs),
@@ -311,9 +314,12 @@ def evaluate(config):
         config.pi_hidden_dims
     ).to(device).eval()
     
-    if hasattr(config, 'pi_weights_path') and os.path.exists(config.pi_weights_path):
-        pi.load_state_dict(torch.load(config.pi_weights_path, map_location=device, weights_only=True))
-        print(f"Loaded HARP Router from {config.pi_weights_path}")
+    if hasattr(config, "pi_weights_path"):
+        if os.path.exists(config.pi_weights_path):
+            pi.load_state_dict(torch.load(config.pi_weights_path, map_location=device, weights_only=True))
+            print(f"Loaded HARP Router from {config.pi_weights_path}")
+        else:
+            print(f"Warning: HARP Router weights not found at {config.pi_weights_path}; using untrained router.")
 
 
     models_to_test = {

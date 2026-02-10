@@ -1,13 +1,13 @@
 train_mode: "g_net"
 
 # misc
-device: "cuda"
+device: "mps"
 save_dir: "harp/models/checkpoints/csc_g"
 log_interval: 1000
 save_freq: 5
 batch_size: 32
 reviewer_costs: [2.365, 3.004]
-val_freq: 5
+val_freq: 1
 log_dir: "harp/logs"
 
 # model configs
@@ -23,7 +23,7 @@ prcdr_vocab_size: 3862
 ## f
 f_hidden_dims: [32, 16, 8, 4]
 f_drouput: 0.1
-f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_1.pt"
+f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_20.pt"
 
 ## g
 csc_hidden_dim: 4
@@ -33,4 +33,4 @@ csc_dropout: 0.1
 ## optimization hyperparams
 bce_pos_weight: 0.2
 lr: 1e-4
-epochs: 100
+epochs: 20

@@ -1,14 +1,14 @@
 train_mode: "harp_pi"
 
 # misc
-device: "cuda"
+device: "mps"
 save_dir: "harp/models/checkpoints/harp_pi"
 log_interval: 1000
 save_freq: 5
 batch_size: 32
 reviewer_costs: [2.365, 3.004]
-val_freq: 5
-log_dir: "logs"
+val_freq: 1
+log_dir: "harp/logs"
 
 # model configs
 
@@ -23,7 +23,7 @@ prcdr_vocab_size: 3862
 ## f
 f_hidden_dims: [32, 16, 8, 4]
 f_drouput: 0.1
-f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_1.pt"
+f_weights_path: "harp/models/checkpoints/f/minimal_fnet_epoch_20.pt"
 
 ## pi
 pi_hidden_dims: [32, 16, 8]
@@ -35,4 +35,4 @@ error_penalty: 3.5 # don't collapse to always using f even if it's wrong so we h
 ## optimization hyperparams
 bce_pos_weight: 0.2
 lr: 1e-4
-epochs: 100
+epochs: 20
